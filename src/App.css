@@ -1,167 +1,201 @@
 /* ─────────────────────────────────────────────────────────────────────────────
-   ATMOS WEATHER — 2026 Production CSS
-   Mobile-first · Dark/Light · Glassmorphism · Accessible
+   ATMOS WEATHER — 2026 Production Design System
+   Refactored for maintainability, performance, and cross-platform native feel.
 ───────────────────────────────────────────────────────────────────────────── */
 
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
 
-/* ── DESIGN TOKENS ─────────────────────────────────────────────────────────── */
 :root {
-  /* Colors */
+  /* ── COLORS ──────────────────────────────────────────────────────────────── */
   --bg-deep: #030918;
-  --bg-surface: rgba(12, 22, 48, 0.55);
+  --bg-surface: rgba(12, 22, 48, 0.6);
   --bg-glass-1: rgba(255, 255, 255, 0.04);
   --bg-glass-2: rgba(255, 255, 255, 0.08);
+  /* Hover state */
   --bg-glass-3: rgba(255, 255, 255, 0.12);
+  /* Active state */
 
-  --glass-stroke: rgba(255, 255, 255, 0.09);
-  --glass-blur: saturate(160%) blur(20px);
+  --glass-stroke: rgba(255, 255, 255, 0.08);
+  --glass-blur: saturate(180%) blur(24px);
 
-  --text-primary: #f1f5f9;
-  --text-secondary: #8ba3c1;
-  --text-accent: #38bdf8;
-  --text-muted: #4d6a8a;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-tertiary: #64748b;
 
   --accent: #38bdf8;
-  --accent-glow: rgba(56, 189, 248, 0.18);
-  --accent-dark: #0284c7;
+  --accent-glow: rgba(56, 189, 248, 0.2);
+  --warn: #f59e0b;
+  --danger: #ef4444;
+  --success: #22c55e;
 
-  /* Radii */
-  --r-xs: 8px;
+  /* ── SPACING SCALE ───────────────────────────────────────────────────────── */
+  --sp-2: 2px;
+  --sp-4: 4px;
+  --sp-8: 8px;
+  --sp-12: 12px;
+  --sp-16: 16px;
+  --sp-24: 24px;
+  --sp-32: 32px;
+  --sp-48: 48px;
+
+  /* ── RADII ───────────────────────────────────────────────────────────────── */
   --r-sm: 12px;
-  --r-md: 20px;
-  --r-lg: 28px;
+  --r-md: 18px;
+  --r-lg: 26px;
   --r-xl: 36px;
   --r-full: 9999px;
 
-  /* Shadows */
-  --shadow-panel: 0 8px 32px rgba(0, 0, 0, 0.45), 0 1px 0 rgba(255, 255, 255, 0.06) inset;
-  --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.3);
-  --shadow-glow: 0 0 32px rgba(56, 189, 248, 0.18);
+  /* ── SHADOWS ─────────────────────────────────────────────────────────────── */
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.2);
+  --shadow-panel: 0 8px 32px rgba(0, 0, 0, 0.4), 0 1px 0 rgba(255, 255, 255, 0.05) inset;
+  --shadow-float: 0 16px 48px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(255, 255, 255, 0.05) inset;
 
-  /* Motion */
-  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-out: cubic-bezier(0.0, 0.0, 0.2, 1);
-  --transition: all 0.35s var(--ease-spring);
+  /* ── Z-INDEX LAYERS ──────────────────────────────────────────────────────── */
+  --z-base: 1;
+  --z-sticky: 100;
+  --z-dropdown: 500;
+  --z-modal: 1000;
+  --z-toast: 2000;
+  --z-splash: 9999;
 
-  /* Fonts */
-  --font-body: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  /* ── TYPOGRAPHY ──────────────────────────────────────────────────────────── */
+  --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* ── ANIMATION ───────────────────────────────────────────────────────────── */
+  --ease-elastic: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration: 0.3s;
+  --transition: all var(--duration) var(--ease-elastic);
+
+  /* ── SAFE AREAS (Mobile) ─────────────────────────────────────────────────── */
+  --safe-top: env(safe-area-inset-top, 20px);
+  --safe-bottom: env(safe-area-inset-bottom, 20px);
+  --safe-left: env(safe-area-inset-left, 0);
+  --safe-right: env(safe-area-inset-right, 0);
 }
 
-/* ── LIGHT THEME ───────────────────────────────────────────────────────────── */
+/* ── LIGHT THEME OVERRIDES ─────────────────────────────────────────────────── */
 [data-theme="light"] {
-  --bg-deep: #eef2f8;
-  --bg-surface: rgba(255, 255, 255, 0.88);
-  --bg-glass-1: rgba(15, 30, 60, 0.04);
-  --bg-glass-2: rgba(15, 30, 60, 0.07);
-  --bg-glass-3: rgba(15, 30, 60, 0.11);
-  --glass-stroke: rgba(15, 30, 60, 0.08);
-
+  --bg-deep: #f1f5f9;
+  --bg-surface: rgba(255, 255, 255, 0.75);
+  --bg-glass-1: rgba(15, 23, 42, 0.03);
+  --bg-glass-2: rgba(15, 23, 42, 0.06);
+  --bg-glass-3: rgba(15, 23, 42, 0.1);
+  --glass-stroke: rgba(15, 23, 42, 0.06);
   --text-primary: #0f172a;
   --text-secondary: #475569;
-  --text-muted: #94a3b8;
-
-  --shadow-panel: 0 4px 24px rgba(15, 23, 42, 0.12), 0 1px 0 rgba(255, 255, 255, 1) inset;
-  --shadow-card: 0 4px 16px rgba(15, 23, 42, 0.08);
+  --text-tertiary: #94a3b8;
+  --shadow-panel: 0 8px 32px rgba(15, 23, 42, 0.08), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
 }
 
-[data-theme="light"] .orb {
-  opacity: 0.15;
-}
-
-[data-theme="light"] .tab-btn.active {
-  background: var(--bg-deep);
-  color: var(--text-primary);
-}
-
-/* ── SYSTEM RESET ──────────────────────────────────────────────────────────── */
+/* ── GLOBAL RESET ──────────────────────────────────────────────────────────── */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
 }
 
 html {
   font-size: 16px;
-  scroll-behavior: smooth;
   height: 100%;
 }
 
 body {
   font-family: var(--font-body);
-  background-color: var(--bg-deep);
+  background: var(--bg-deep);
   color: var(--text-primary);
   line-height: 1.5;
   overflow-x: hidden;
-  min-height: 100%;
   min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input {
+  font-family: inherit;
+  color: inherit;
+  border: none;
+  background: none;
+  font-size: 1rem;
 }
 
 button {
   cursor: pointer;
-  font-family: var(--font-body);
-  border: none;
-  background: none;
+}
+
+a {
+  text-decoration: none;
   color: inherit;
 }
 
-input {
-  font-family: var(--font-body);
-  color: inherit;
-  border: none;
-  background: none;
+ul,
+ol {
+  list-style: none;
 }
 
-/* Focus visible — accessibility */
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* Custom Focus Ring for Accessibility */
 :focus-visible {
-  outline: 2px solid var(--text-accent);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
-  border-radius: var(--r-sm);
+  border-radius: var(--sp-4);
 }
 
-button:focus:not(:focus-visible),
-input:focus:not(:focus-visible) {
-  outline: none;
-}
-
-/* Scrollbar */
+/* ── SCROLLBARS ────────────────────────────────────────────────────────────── */
+/* Mobile: hidden for cleaner look */
 ::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
-}
-
-::-webkit-scrollbar-track {
+  width: 0;
+  height: 0;
   background: transparent;
 }
 
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: var(--r-full);
-}
+/* Desktop: sleek scrollbars on hover-capable devices */
+@media (hover: hover) and (pointer: fine) {
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
 
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.25);
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--bg-glass-3);
+    border-radius: var(--r-full);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--text-secondary);
+  }
 }
 
 /* ── APP SHELL ─────────────────────────────────────────────────────────────── */
 .app {
-  min-height: 100vh;
-  min-height: 100dvh;
   display: flex;
   flex-direction: column;
+  min-height: 100dvh;
+  padding-top: var(--safe-top);
+  padding-bottom: var(--safe-bottom);
+  padding-left: var(--safe-left);
+  padding-right: var(--safe-right);
   position: relative;
+  isolation: isolate;
 }
 
-/* ── AURORA BACKGROUND ─────────────────────────────────────────────────────── */
+/* Background Aurora */
 .aurora {
   position: fixed;
   inset: 0;
-  z-index: 0;
+  z-index: -1;
   overflow: hidden;
   pointer-events: none;
 }
@@ -169,157 +203,106 @@ input:focus:not(:focus-visible) {
 .orb {
   position: absolute;
   border-radius: 50%;
-  opacity: 0.18;
-  filter: blur(100px);
+  filter: blur(80px);
+  /* Performance optimization: slightly less blur */
+  opacity: 0.12;
   will-change: transform;
+  /* Opt-in for GPU compositing */
 }
 
 .orb-1 {
-  width: min(700px, 120vw);
-  height: min(700px, 120vw);
-  background: radial-gradient(circle, #38bdf8, #0ea5e9);
-  top: -15%;
+  width: 60vmax;
+  height: 60vmax;
+  background: var(--accent);
+  top: -10%;
   left: -10%;
-  animation: orb-drift-1 28s infinite alternate var(--ease-spring);
+  transform: translate3d(0, 0, 0);
 }
 
 .orb-2 {
-  width: min(600px, 100vw);
-  height: min(600px, 100vw);
-  background: radial-gradient(circle, #818cf8, #6366f1);
-  bottom: 5%;
+  width: 50vmax;
+  height: 50vmax;
+  background: #6366f1;
+  bottom: -10%;
   right: -10%;
-  animation: orb-drift-2 22s infinite alternate var(--ease-spring);
+  transform: translate3d(0, 0, 0);
 }
 
 .orb-3 {
-  width: min(400px, 80vw);
-  height: min(400px, 80vw);
-  background: radial-gradient(circle, #34d399, #059669);
-  bottom: 25%;
-  left: 30%;
-  animation: orb-drift-3 35s infinite alternate var(--ease-spring);
-  opacity: 0.08;
+  width: 40vmax;
+  height: 40vmax;
+  background: #10b981;
+  bottom: 20%;
+  left: 10%;
+  opacity: 0.06;
+  transform: translate3d(0, 0, 0);
 }
 
-@keyframes orb-drift-1 {
-  from {
-    transform: translate(0, 0) scale(1);
-  }
-
-  to {
-    transform: translate(8%, 12%) scale(1.18);
-  }
-}
-
-@keyframes orb-drift-2 {
-  from {
-    transform: translate(0, 0) scale(1);
-  }
-
-  to {
-    transform: translate(-10%, -8%) scale(1.22);
-  }
-}
-
-@keyframes orb-drift-3 {
-  from {
-    transform: translate(0, 0) scale(1);
-  }
-
-  to {
-    transform: translate(5%, -12%) scale(1.3);
-  }
-}
-
-/* ── MAIN CONTENT — Mobile-First ───────────────────────────────────────────── */
-/*
-  Breakpoints:
-    xs  < 480px   → 1-col stack, minimal padding
-    sm  ≥ 480px   → slightly more padding
-    md  ≥ 768px   → still single column, wider padding
-    lg  ≥ 1024px  → 2-column side-by-side layout
-*/
+/* ── MAIN CONTENT GRID ─────────────────────────────────────────────────────── */
 .main-content {
-  position: relative;
-  z-index: 1;
-  /* width: 100% so it fills the viewport on every device */
+  flex: 1;
   width: 100%;
-  /* 1200px cap prevents over-stretching on ultra-wide screens */
   max-width: 1200px;
   margin: 0 auto;
-  /* clamp: 12px on mobile, scales to 32px on desktop */
-  padding: clamp(12px, 4vw, 32px);
-  /* Mobile-first: single column stack */
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: clamp(12px, 3vw, 24px);
-  /* flex: 1 makes it fill remaining vertical space inside .app flex column */
-  flex: 1;
+  padding: var(--sp-16);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-24);
 }
 
-/* ≥ 1024px: side-by-side — left sidebar + right content */
+/* Desktop: 2-Column Grid */
 @media (min-width: 1024px) {
   .main-content {
-    grid-template-columns: minmax(320px, 380px) 1fr;
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    /* Fixed sidebar width */
     align-items: start;
+    padding: var(--sp-32);
+    gap: var(--sp-32);
   }
 }
 
-/* Explicit 1-column logic for tablet/mobile */
-@media (max-width: 1023px) {
-  .main-content {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Columns */
-.left-col {
+.col-left,
+.col-right {
   display: flex;
   flex-direction: column;
-  gap: clamp(12px, 2vw, 16px);
-  /* Bug 9: creates isolation for dropdown z-index escaping */
-  isolation: isolate;
+  gap: var(--sp-16);
+  min-width: 0;
+  /* Flexbox overflow fix */
 }
 
-.right-col {
-  display: flex;
-  flex-direction: column;
-  gap: clamp(12px, 2vw, 16px);
-  /* Bug 1: container query root for detail-grid */
+.col-right {
   container-type: inline-size;
+  /* For component queries */
 }
 
 /* ── HEADER ────────────────────────────────────────────────────────────────── */
-.nav-header {
+.header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 4px 0;
+  padding: var(--sp-4) 0;
 }
 
-.logo {
+.brand {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: clamp(1.2rem, 4vw, 1.5rem);
+  gap: var(--sp-8);
+  font-size: 1.25rem;
   font-weight: 800;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.02em;
   user-select: none;
 }
 
-.logo span {
-  color: var(--text-primary);
-}
-
-.header-actions {
+.header-controls {
   display: flex;
-  gap: 8px;
+  gap: var(--sp-12);
 }
 
-.btn-round {
-  width: 42px;
-  height: 42px;
+/* Iconic Button */
+.btn-icon {
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -327,162 +310,460 @@ input:focus:not(:focus-visible) {
   background: var(--bg-glass-1);
   border: 1px solid var(--glass-stroke);
   transition: var(--transition);
-  flex-shrink: 0;
+  position: relative;
+  /* For touch target padding if needed */
 }
 
-.btn-round:hover {
+.btn-icon:hover {
   background: var(--bg-glass-2);
-  transform: scale(1.08);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
 }
 
-.btn-round:active {
+.btn-icon:active {
   transform: scale(0.95);
 }
 
-.btn-round:disabled {
+.btn-icon:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-  transform: none;
 }
 
-/* ── QUICK SELECT RAIL ────────────────────────────────────────────────────── */
-.quick-rail {
+/* ── DISCOVERY (Search + Quick Nav) ────────────────────────────────────────── */
+.discovery {
   display: flex;
-  gap: 12px;
-  overflow-x: auto;
-  padding: 8px 2px 16px;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
-  margin-top: -4px;
+  flex-direction: column;
+  gap: var(--sp-12);
 }
 
-.quick-rail::-webkit-scrollbar {
-  display: none;
-}
-
-.quick-chip {
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
-  background: var(--bg-glass-1);
-  border: 1px solid var(--glass-stroke);
-  border-radius: var(--r-full);
-  color: var(--text-secondary);
-  font-size: 0.85rem;
-  font-weight: 600;
-  transition: var(--transition);
-  white-space: nowrap;
-}
-
-.quick-chip:hover {
-  background: var(--bg-glass-2);
-  color: var(--text-primary);
-}
-
-.quick-chip.active {
-  background: var(--accent-glow);
-  border-color: var(--accent);
-  color: var(--accent);
-  box-shadow: 0 0 15px var(--accent-glow);
-}
-
-.quick-temp {
-  opacity: 0.6;
-  font-size: 0.75rem;
-  font-weight: 500;
-  margin-left: 2px;
-}
-
-.search-box {
+.search-form {
   position: relative;
+  z-index: var(--z-dropdown);
 }
 
-.search-icon {
+.search-field {
+  width: 100%;
+  height: 48px;
+  background: var(--bg-glass-1);
+  border: 1.5px solid var(--glass-stroke);
+  border-radius: var(--r-md);
+  padding: 0 var(--sp-48) 0 var(--sp-48);
+  /* ample padding for icons */
+  font-size: 0.95rem;
+  font-weight: 500;
+  backdrop-filter: blur(12px);
+  transition: var(--transition);
+}
+
+.search-field:focus {
+  background: var(--bg-glass-2);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-glow);
+}
+
+.search-icon-left {
   position: absolute;
-  left: 16px;
+  left: var(--sp-16);
   top: 50%;
   transform: translateY(-50%);
   color: var(--text-secondary);
   pointer-events: none;
-  z-index: 2;
 }
 
-.search-input {
-  width: 100%;
-  height: clamp(44px, 10vw, 50px);
-  background: var(--bg-glass-1);
-  border: 1.5px solid var(--glass-stroke);
-  border-radius: var(--r-full);
-  padding: 0 44px 0 44px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  transition: var(--transition);
-  color: var(--text-primary);
-}
-
-.search-input::placeholder {
-  color: var(--text-muted);
-}
-
-.search-input:focus {
-  background: var(--bg-glass-2);
-  border-color: var(--text-accent);
-  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.12);
-}
-
-.search-clear {
+.search-clear-btn {
   position: absolute;
-  right: 14px;
+  right: var(--sp-12);
   top: 50%;
   transform: translateY(-50%);
   width: 24px;
   height: 24px;
   border-radius: 50%;
+  background: var(--bg-glass-2);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--bg-glass-2);
-  color: var(--text-secondary);
+  color: var(--text-tertiary);
   transition: var(--transition);
-  z-index: 2;
 }
 
-.search-clear:hover {
+.search-clear-btn:hover {
   background: var(--bg-glass-3);
   color: var(--text-primary);
 }
 
-/* ── DROPDOWN ──────────────────────────────────────────────────────────────── */
-.dropdown {
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 0;
-  right: 0;
+/* Quick Cities Rail */
+.quick-nav {
+  display: flex;
+  gap: var(--sp-8);
+  overflow-x: auto;
+  padding: 2px;
+  /* Avoid Focus ring clipping */
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+
+.chip {
+  flex: 0 0 auto;
+  height: 36px;
+  padding: 0 var(--sp-16);
+  border-radius: var(--r-full);
+  background: var(--bg-glass-1);
+  border: 1px solid var(--glass-stroke);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-8);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  transition: var(--transition);
+}
+
+.chip:hover {
+  background: var(--bg-glass-2);
+  color: var(--text-primary);
+}
+
+.chip.active {
+  background: var(--accent-glow);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ── PANELS ────────────────────────────────────────────────────────────────── */
+.panel {
   background: var(--bg-surface);
+  border: 1px solid var(--glass-stroke);
+  border-radius: var(--r-xl);
+  padding: var(--sp-24);
+  box-shadow: var(--shadow-panel);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-stroke);
-  border-radius: var(--r-lg);
+  position: relative;
   overflow: hidden;
-  /* Bug 9: elevated z-index for search dropdown */
-  z-index: 1000;
-  box-shadow: var(--shadow-panel);
-  list-style: none;
+  /* Contains decorative elements */
+}
+
+/* High-Quality Gradient Overlay for Glass Effect */
+.panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, transparent 40%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.panel-content {
+  position: relative;
+  z-index: 2;
+  /* brings content above overlay */
+}
+
+/* ── HERO SECTION ──────────────────────────────────────────────────────────── */
+.hero {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-16);
+}
+
+.hero-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-8);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  letter-spacing: 0.05em;
+}
+
+.hero-body {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+/* Fluid Type with Clean Clamp */
+.temp-display {
+  display: flex;
+  align-items: flex-start;
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  font-size: clamp(3.5rem, 12vw, 6rem);
+}
+
+.temp-unit {
+  font-size: 0.35em;
+  margin-top: 0.1em;
+  display: flex;
+  font-weight: 700;
+}
+
+.temp-unit span:last-child {
+  opacity: 0.6;
+}
+
+.condition-label {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-top: var(--sp-8);
+}
+
+.feels-like {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-top: var(--sp-4);
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--sp-8);
+  border-top: 1px solid var(--glass-stroke);
+  padding-top: var(--sp-16);
+  margin-top: var(--sp-8);
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.stat-value {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+/* ── HOURLY RAIL ───────────────────────────────────────────────────────────── */
+.section-title {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: var(--text-tertiary);
+  margin-bottom: var(--sp-16);
+}
+
+.hourly-scroll {
+  display: flex;
+  gap: var(--sp-12);
+  overflow-x: auto;
+  padding-bottom: var(--sp-8);
+  margin: 0 -8px;
+  /* Optical adjustment */
+  padding-left: 8px;
+  /* Optical adjustment */
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.hour-card {
+  flex: 0 0 72px;
+  /* Fixed width */
+  scroll-snap-align: start;
+  background: var(--bg-glass-1);
+  border: 1px solid var(--glass-stroke);
+  border-radius: var(--r-md);
+  padding: var(--sp-16) var(--sp-8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-12);
+  transition: var(--transition);
+}
+
+.hour-card.current {
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 8px 16px var(--accent-glow);
+  color: #fff;
+}
+
+.hour-card.current .text-dim {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.hour-time {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.hour-temp {
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+.hour-pop {
+  font-size: 0.65rem;
+  color: var(--accent);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+/* ── TABS ──────────────────────────────────────────────────────────────────── */
+.tab-group {
+  display: flex;
+  background: var(--bg-glass-1);
+  padding: 4px;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--glass-stroke);
+  gap: 4px;
+}
+
+.tab-item {
+  flex: 1;
+  height: 44px;
+  /* Minimum touch target */
+  border-radius: calc(var(--r-lg) - 4px);
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  transition: var(--transition);
+}
+
+.tab-item:hover {
+  color: var(--text-primary);
+  background: var(--bg-glass-1);
+}
+
+.tab-item.active {
+  background: var(--bg-surface);
+  color: var(--accent);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ── DETAILS GRID ──────────────────────────────────────────────────────────── */
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  /* Intelligent wrapping */
+  gap: var(--sp-16);
+}
+
+.detail-card {
+  padding: var(--sp-24);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-12);
+}
+
+.detail-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-8);
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.detail-value {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.detail-unit {
+  font-size: 0.6em;
+  opacity: 0.6;
+  margin-left: 2px;
+}
+
+.detail-note {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+/* ── FORECAST LIST ─────────────────────────────────────────────────────────── */
+.forecast-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-8);
+}
+
+.forecast-item {
+  display: grid;
+  grid-template-columns: 100px 40px 1fr auto;
+  /* Name | Icon | Cond | Temps */
+  align-items: center;
+  padding: var(--sp-12) var(--sp-16);
+  background: var(--bg-glass-1);
+  border: 1px solid var(--glass-stroke);
+  border-radius: var(--r-md);
+  transition: var(--transition);
+}
+
+.forecast-item:hover {
+  background: var(--bg-glass-2);
+  transform: translateX(2px);
+}
+
+.f-day {
+  font-weight: 700;
+}
+
+.f-temps {
+  display: flex;
+  gap: var(--sp-12);
+  font-weight: 700;
+  text-align: right;
+}
+
+.f-max {
+  color: var(--text-primary);
+}
+
+.f-min {
+  color: var(--text-tertiary);
+}
+
+@media (max-width: 480px) {
+  .forecast-item {
+    grid-template-columns: 1fr auto auto;
+  }
+
+  .f-cond {
+    display: none;
+  }
+}
+
+/* ── DROPDOWN ──────────────────────────────────────────────────────────────── */
+.search-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: var(--sp-8);
+  background: var(--bg-deep);
+  border: 1px solid var(--glass-stroke);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-float);
+  z-index: var(--z-dropdown);
+  overflow: hidden;
+  max-height: 300px;
+  overflow-y: auto;
 }
 
 .dropdown-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 13px 18px;
+  gap: var(--sp-12);
+  padding: var(--sp-12) var(--sp-16);
   cursor: pointer;
   border-bottom: 1px solid var(--glass-stroke);
   transition: background 0.2s;
-  color: var(--text-secondary);
 }
 
 .dropdown-item:last-child {
@@ -493,926 +774,56 @@ input:focus:not(:focus-visible) {
   background: var(--bg-glass-2);
 }
 
-.city-name {
-  font-weight: 700;
-  font-size: 0.9rem;
-  color: var(--text-primary);
-}
-
-.city-country {
-  font-size: 0.75rem;
-  color: var(--text-secondary);
-  margin-top: 1px;
-}
-
-/* ── GLASS PANELS ──────────────────────────────────────────────────────────── */
-.panel {
-  background: var(--bg-surface);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-stroke);
-  border-radius: var(--r-xl);
-  padding: clamp(20px, 4vw, 32px);
-  box-shadow: var(--shadow-panel);
-  position: relative;
-  /* Bug 3: removed overflow: hidden to allow horizontal scrolls to work correctly on iOS */
-  /* instead we clip the children that need it using other methods */
-  overflow: visible;
-}
-
-.panel::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 60%);
-  pointer-events: none;
-  /* Bug 3: use clip-path to maintain rounded corners on decoration without overflow: hidden */
-  clip-path: inset(0 round var(--r-xl));
-  border-radius: inherit;
-}
-
-/* ── HERO PANEL ────────────────────────────────────────────────────────────── */
-.hero {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  padding: clamp(20px, 5vw, 32px);
-  color: #fff;
-  border: none;
-  box-shadow: var(--shadow-panel), var(--shadow-glow);
-}
-
-.hero-location {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  opacity: 0.75;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-/* ── hero-main: row on all sizes that fit, column-reverse on tiny phones ── */
-.hero-main {
-  display: flex;
-  /* row — icon beside temperature text */
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 12px;
-}
-
-/* On phones < 380px stack icon on top, text below (column-reverse so
-   the big icon catches the eye first but temp stays readable beneath) */
-@media (max-width: 379px) {
-  .hero-main {
-    flex-direction: column-reverse;
-    align-items: center;
-    text-align: center;
-  }
-
-  .hero-left {
-    width: 100%;
-  }
-
-  .datetime {
-    justify-content: center;
-  }
-}
-
-.hero-left {
-  flex: 1;
-  min-width: 0;
-}
-
-.hero-right {
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-}
-
-/* ── Temperature — fluid scaling with clamp() ───────────────────────────────
-   Min: 3.5rem  on a 320px phone
-   Fluid: 15vw  scales with viewport (≈ 48px on 320px, ≈ 105px on 700px)
-   Max: 6.5rem  caps on large screens when used inside the 420px sidebar
-*/
-.temp-hero {
-  font-size: clamp(3.5rem, 15vw, 6.5rem);
-  font-weight: 800;
-  line-height: 0.88;
-  letter-spacing: -0.06em;
-  margin: 8px 0 6px;
-  display: flex;
-  align-items: flex-start;
-}
-
-.temp-hero sup {
-  font-size: 0.35em;
-  font-weight: 700;
-  margin-top: 0.15em;
-  margin-left: 0.1em;
-  opacity: 0.8;
-}
-
-/* condition label: never smaller than 1rem, fluid, capped at 1.4rem */
-.condition-text {
-  font-size: clamp(1rem, 3.5vw, 1.4rem);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
-
-.feels-like {
-  font-size: clamp(0.78rem, 2vw, 0.9rem);
-  opacity: 0.65;
-  margin-top: 4px;
-}
-
-.datetime {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.8rem;
-  opacity: 0.55;
-  margin-top: 10px;
-  flex-wrap: wrap;
-}
-
-.time-sep {
-  opacity: 0.4;
-}
-
-.clock {
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-}
-
-.hero-stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  padding-top: 18px;
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
-}
-
-.h-stat {
-  text-align: center;
-}
-
-.h-stat-label {
-  font-size: 0.6rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-weight: 700;
-  opacity: 0.55;
-  margin-bottom: 4px;
-}
-
-.h-stat-value {
-  font-size: 0.95rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-}
-
-.h-stat-value small {
-  font-size: 0.65rem;
-  font-weight: 600;
-  opacity: 0.7;
-}
-
-/* ── HOURLY RAIL — Horizontal Scrollable Container ──────────────────────────
-   On mobile: cards stay fixed-width and scroll horizontally.
-   Cards never shrink, so they remain readable and tappable at every size.
-   overflow-x: auto   → activates the horizontal scrollbar (hidden visually)
-   scroll-snap-type   → snaps card-by-card on swipe (iOS/Android feel)
-   -webkit-overflow-scrolling: touch → momentum scrolling on older iOS
-*/
-.hourly-rail {
-  display: flex;
-  gap: 10px;
-  /* The key rule: horizontal scroll instead of wrapping/shrinking */
-  overflow-x: auto;
-  /* Prevent vertical bleed */
-  overflow-y: visible;
-  padding-bottom: 8px;
-  /* Hide the native scrollbar — the swipe gesture is the affordance */
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
-  /* Snap to each card on swipe for tactile precision */
-  scroll-snap-type: x mandatory;
-  /* Prevent layout from collapsing the rail height */
-  min-height: 0;
-}
-
-.hourly-rail::-webkit-scrollbar {
-  display: none;
-}
-
-.hour-card {
-  /*
-    flex: 0 0 <width> → do NOT grow, do NOT shrink, stay exactly <width>.
-    76px is the minimum comfortable tap target width.
-    This guarantees cards are readable and tappable regardless of rail width.
-  */
-  flex: 0 0 76px;
-  min-width: 76px;
-  /* belt-and-suspenders for older browsers */
-  min-height: 110px;
-  /* ensures card is tall enough to tap comfortably */
-  background: var(--bg-glass-1);
-  border: 1px solid var(--glass-stroke);
-  border-radius: var(--r-md);
-  padding: 14px 8px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  gap: 6px;
-  scroll-snap-align: start;
-  transition: background 0.2s, transform 0.15s;
-  /* No shrinking ever */
-  word-break: keep-all;
-}
-
-.hour-card:hover {
+.dropdown-item:focus {
   background: var(--bg-glass-2);
-  transform: translateY(-2px);
+  outline: none;
 }
 
-.hour-card.now {
-  background: var(--accent-glow);
-  border-color: var(--accent);
-  box-shadow: 0 0 20px var(--accent-glow);
-}
-
-.hour-time {
-  font-size: 0.68rem;
-  font-weight: 700;
-  color: var(--text-secondary);
-  white-space: nowrap;
-}
-
-.hour-temp {
-  font-size: 1rem;
-  font-weight: 800;
-  line-height: 1;
-}
-
-.hour-rain {
-  font-size: 0.62rem;
-  font-weight: 700;
-  color: var(--text-accent);
+/* ── SPLASH ────────────────────────────────────────────────────────────────── */
+.splash-screen {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-splash);
+  background: var(--bg-deep);
   display: flex;
-  align-items: center;
-  gap: 2px;
-  white-space: nowrap;
-}
-
-/* ── TABS — 44px Touch Targets + Overflow Scroll Fallback ───────────────────
-   Each tab button meets the WCAG / Apple HIG / Android minimum of 44×44px.
-   On very narrow screens (< 300px) tabs overflow-x scroll rather than
-   squishing below readable size.
-*/
-.tabs {
-  display: flex;
-  gap: 4px;
-  padding: 5px;
-  background: var(--bg-glass-1);
-  border: 1px solid var(--glass-stroke);
-  border-radius: var(--r-lg);
-  /* Allow tabs to scroll horizontally on tiny screens instead of wrapping
-     or shrinking below the 44px touch-target minimum */
-  overflow-x: auto;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
-  /* Bug 4: scroll padding for active tab view */
-  scroll-padding-inline: 4px;
-  /* Prevent the pill shape from collapsing */
-  flex-shrink: 0;
-}
-
-.tabs::-webkit-scrollbar {
-  display: none;
-}
-
-.tab-btn {
-  /* Bug 4: prevent tab shrinking below content size */
-  flex: 0 0 auto;
-  /* Minimum width so text never disappears */
-  min-width: 68px;
-  /* Minimum HEIGHT of 44px — the WCAG touch-target requirement */
-  min-height: 44px;
-  padding: 10px 8px;
-  border-radius: var(--r-md);
-  font-size: clamp(0.72rem, 2.8vw, 0.85rem);
-  font-weight: 700;
-  color: var(--text-secondary);
-  transition: var(--transition);
-  /* Keep label on one line — no line breaks inside a tab */
-  white-space: nowrap;
-  /* Tappable even if the flex container clips */
-  flex-shrink: 0;
-  /* Centre label horizontally and vertically */
-  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: var(--sp-24);
 }
 
-.tab-btn:hover:not(.active) {
-  color: var(--text-primary);
-  background: var(--bg-glass-1);
-}
-
-.tab-btn.active {
-  background: var(--text-accent);
-  color: #fff;
-  box-shadow: 0 2px 12px rgba(56, 189, 248, 0.35);
-}
-
-/* ── DETAIL TILES — Container-Based Grid (Bug 1 Fix) ─────────────────────────
-     Instead of raw viewport media queries, we respond to the .right-col width.
-*/
-.detail-grid {
-  display: grid;
-  /* Default: 1 column */
-  grid-template-columns: 1fr;
-  gap: clamp(10px, 2vw, 16px);
-}
-
-@container (min-width: 380px) {
-  .detail-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@container (min-width: 650px) {
-  .detail-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-@container (min-width: 950px) {
-  .detail-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-.tile {
-  padding: clamp(16px, 3vw, 22px);
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  border-radius: var(--r-lg) !important;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.tile:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-panel), 0 8px 24px rgba(0, 0, 0, 0.2);
-}
-
-.tile-head {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  color: var(--text-secondary);
-  font-size: 0.7rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.tile-icon {
-  display: flex;
-  align-items: center;
-  color: var(--text-accent);
-  flex-shrink: 0;
-}
-
-.tile-body {
-  font-size: 1.5rem;
-  font-weight: 800;
-  font-family: var(--font-mono);
-  letter-spacing: -0.02em;
-  line-height: 1;
-}
-
-.tile-unit {
+/* ── FOOTER ────────────────────────────────────────────────────────────────── */
+.app-footer {
+  text-align: center;
+  padding: var(--sp-24);
+  color: var(--text-tertiary);
   font-size: 0.75rem;
-  font-weight: 500;
-  opacity: 0.5;
-  margin-left: 3px;
-  font-family: var(--font-body);
+  margin-top: auto;
 }
 
-.tile-sub {
-  font-size: 0.7rem;
-  color: var(--text-secondary);
-  font-weight: 500;
-}
-
-/* ── FORECAST LIST ─────────────────────────────────────────────────────────── */
-.forecast-list {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.forecast-row {
-  display: grid;
-  grid-template-columns: 1fr auto auto auto;
-  align-items: center;
-  gap: 12px;
-  padding: 13px 16px;
-  background: var(--bg-glass-1);
-  border-radius: var(--r-md);
-  border: 1px solid transparent;
-  transition: background 0.2s, border-color 0.2s;
-}
-
-.forecast-row:hover {
-  background: var(--bg-glass-2);
-  border-color: var(--glass-stroke);
-}
-
-.forecast-day {
-  font-weight: 700;
-  font-size: 0.88rem;
-  white-space: nowrap;
-  /* Bug 2: allow truncation of long day strings */
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.forecast-icon {
-  display: flex;
-  align-items: center;
-}
-
-.forecast-condition {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  flex: 1;
-  min-width: 0;
-}
-
-.forecast-cond-text {
-  font-size: 0.78rem;
-  color: var(--text-secondary);
-  font-weight: 500;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.forecast-precip {
-  font-size: 0.65rem;
-  color: var(--text-accent);
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: 2px;
-}
-
-.forecast-temps {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  font-family: var(--font-mono);
-}
-
-.forecast-max {
-  font-weight: 800;
-  font-size: 0.9rem;
-}
-
-.forecast-min {
-  font-weight: 500;
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-}
-
-/* ── CHART ─────────────────────────────────────────────────────────────────── */
-.chart-panel {
-  padding: clamp(20px, 4vw, 28px);
-}
-
-.chart-wrap {
-  margin-top: 8px;
-  width: 100%;
-}
-
-.chart-tooltip {
+/* ── CHART TOOLTIP ─────────────────────────────────────────────────────────── */
+.custom-tooltip {
   background: var(--bg-surface);
   border: 1px solid var(--glass-stroke);
   border-radius: var(--r-sm);
-  padding: 10px 14px;
-  font-size: 12px;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  box-shadow: var(--shadow-card);
-  min-width: 110px;
+  padding: var(--sp-8) var(--sp-12);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-sm);
 }
 
-.chart-tooltip-label {
-  font-weight: 700;
-  color: var(--text-secondary);
-  margin-bottom: 4px;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-
-/* ── SUN ARC ───────────────────────────────────────────────────────────────── */
-.sun-times {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-bottom: 20px;
-}
-
-.sun-time-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  /* Bug 7: prevent overflow in grid cell */
-  min-width: 0;
-}
-
-.sun-label {
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-weight: 700;
-  color: var(--text-secondary);
-  margin-bottom: 3px;
-}
-
-.sun-value {
-  font-size: 1.4rem;
-  font-weight: 800;
-  font-family: var(--font-mono);
-  /* Bug 7: prevent text overflow on high font-scaling */
-  word-break: break-all;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.daylight-bar-wrap {
-  margin-top: 8px;
-}
-
-.daylight-bar {
-  height: 8px;
-  background: var(--bg-glass-2);
-  border-radius: var(--r-full);
-  overflow: visible;
-  position: relative;
-}
-
-.daylight-progress {
-  height: 100%;
-  background: linear-gradient(90deg, #fbbf24, #f97316);
-  border-radius: var(--r-full);
-  position: relative;
-  transition: width 1s linear;
-  min-width: 8px;
-}
-
-.sun-dot {
-  position: absolute;
-  right: -6px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 18px;
-  height: 18px;
-  background: #fbbf24;
-  border-radius: 50%;
-  border: 3px solid var(--bg-deep);
-  box-shadow: 0 0 10px rgba(251, 191, 36, 0.6);
-}
-
-.daylight-label {
-  font-size: 0.75rem;
-  color: var(--text-secondary);
-  font-weight: 600;
-  margin-top: 14px;
-  text-align: center;
-}
-
-/* ── UV INDEX ──────────────────────────────────────────────────────────────── */
-.uv-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.uv-row {
-  display: grid;
-  grid-template-columns: 50px 1fr 36px 60px;
-  align-items: center;
-  gap: 10px;
-}
-
-.uv-day {
-  font-weight: 700;
-  font-size: 0.8rem;
-}
-
-.uv-bar-track {
-  height: 6px;
-  background: var(--bg-glass-2);
-  border-radius: var(--r-full);
-  overflow: hidden;
-}
-
-.uv-bar-fill {
-  height: 100%;
-  border-radius: var(--r-full);
-  transition: width 0.5s var(--ease-out);
-}
-
-.uv-val {
-  font-size: 0.8rem;
-  font-weight: 800;
-  font-family: var(--font-mono);
-  text-align: right;
-}
-
-.uv-label-text {
-  font-size: 0.68rem;
-  color: var(--text-secondary);
-  font-weight: 600;
-  /* Bug 6: prevent wrapping and overflow inconsistently */
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* ── LABELS ────────────────────────────────────────────────────────────────── */
-.label-sm {
-  font-size: 0.65rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-  letter-spacing: 0.12em;
-  margin-bottom: 14px;
-}
-
-/* ── LOADING SPINNER ───────────────────────────────────────────────────────── */
-.spinner-ring {
-  display: inline-block;
-  position: relative;
-  width: 48px;
-  height: 48px;
-}
-
-.spinner-ring div {
-  box-sizing: border-box;
-  display: block;
-  position: absolute;
-  width: 40px;
-  height: 40px;
-  margin: 4px;
-  border: 3px solid transparent;
-  border-top-color: var(--text-accent);
-  border-radius: 50%;
-  animation: spin 1.1s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-}
-
-.spinner-ring div:nth-child(1) {
-  animation-delay: -0.45s;
-}
-
-.spinner-ring div:nth-child(2) {
-  animation-delay: -0.3s;
-}
-
-.spinner-ring div:nth-child(3) {
-  animation-delay: -0.15s;
-}
-
+/* ── ANIMATIONS ────────────────────────────────────────────────────────────── */
 @keyframes spin {
-  0% {
+  from {
     transform: rotate(0deg);
   }
 
-  100% {
+  to {
     transform: rotate(360deg);
   }
 }
 
 .spin {
-  animation: spin 1.2s linear infinite;
-}
-
-/* ── SPLASH SCREEN ─────────────────────────────────────────────────────────── */
-.splash {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.splash-inner {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 24px;
-  text-align: center;
-  padding: 32px;
-}
-
-.splash-logo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 2rem;
-  font-weight: 800;
-  letter-spacing: -0.05em;
-}
-
-.splash-text {
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-  font-weight: 500;
-}
-
-/* ── ERROR STATES ──────────────────────────────────────────────────────────── */
-.error-title {
-  font-size: 1.3rem;
-  font-weight: 800;
-  margin-top: 8px;
-}
-
-.error-msg {
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-  max-width: 360px;
-  text-align: center;
-  line-height: 1.6;
-}
-
-.retry-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 24px;
-  border-radius: var(--r-full);
-  background: var(--text-accent);
-  color: #fff;
-  font-weight: 700;
-  font-size: 0.9rem;
-  transition: var(--transition);
-  box-shadow: 0 4px 16px rgba(56, 189, 248, 0.35);
-}
-
-.retry-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(56, 189, 248, 0.45);
-}
-
-.error-banner {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 20px;
-  background: rgba(245, 158, 11, 0.15);
-  border-bottom: 1px solid rgba(245, 158, 11, 0.3);
-  color: #fbbf24;
-  font-size: 0.85rem;
-  font-weight: 600;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-.error-banner span {
-  flex: 1;
-}
-
-.error-banner button {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(245, 158, 11, 0.2);
-  color: #fbbf24;
-  flex-shrink: 0;
-  transition: background 0.2s;
-}
-
-.error-banner button:hover {
-  background: rgba(245, 158, 11, 0.35);
-}
-
-/* ── FOOTER ────────────────────────────────────────────────────────────────── */
-.footer {
-  position: relative;
-  z-index: 1;
-  text-align: center;
-  padding: clamp(20px, 5vw, 40px) 20px;
-  color: var(--text-muted);
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-}
-
-/* ── MOBILE OVERRIDES ──────────────────────────────────────────────────────── */
-
-/* xs phones < 480px */
-@media (max-width: 479px) {
-
-  /* hero-stats: drop to 2×2 grid so values stay legible (Bug 5 fix check) */
-  .hero-stats {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-  }
-
-  /* forecast: hide the descriptive condition text, keep icon + temps */
-  /* Bug 2: fix overflow with max-width on end column */
-  .forecast-row {
-    grid-template-columns: 1fr auto auto;
-    gap: 8px;
-    padding: 12px 12px;
-    overflow: hidden;
-  }
-
-  .forecast-temps {
-    max-width: 80px;
-  }
-
-  .forecast-condition {
-    display: none;
-  }
-
-  /* UV chart: tighten columns on narrow screens */
-  .uv-row {
-    grid-template-columns: 42px 1fr 28px 46px;
-    gap: 6px;
-  }
-
-  /* chart panels: reduce left-right padding */
-  .chart-panel {
-    padding: 16px;
-  }
-
-  /* panels overall: reduce padding */
-  .panel {
-    padding: clamp(16px, 4vw, 24px);
-  }
-}
-
-/* Very small phones: 360px and below */
-@media (max-width: 360px) {
-
-  /* Hide wordmark so ATMOS logo icon + actions still fit */
-  .logo span {
-    display: none;
-  }
-
-  /* temp-hero is already clamp'd, but add a hard floor for 320px phones */
-  .temp-hero {
-    font-size: 3.2rem;
-  }
-
-  /* Tighter header */
-  .nav-header {
-    padding: 0;
-  }
-}
-
-/* Landscape phones (short + wide): reduce vertical padding */
-@media (max-height: 500px) and (orientation: landscape) {
-  .hero {
-    padding: 16px;
-    gap: 12px;
-  }
-
-  .temp-hero {
-    font-size: clamp(2.5rem, 10vw, 4rem);
-    margin: 4px 0;
-  }
-
-  .hero-stats {
-    display: none;
-    /* save vertical space */
-  }
-
-  .datetime {
-    display: none;
-    /* save vertical space */
-  }
+  animation: spin 1s linear infinite;
 }
 
 /* ── REDUCED MOTION ────────────────────────────────────────────────────────── */
@@ -1422,21 +833,8 @@ input:focus:not(:focus-visible) {
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-  }
-
-  .orb {
-    animation: none;
-  }
-}
-
-/* ── HIGH CONTRAST ─────────────────────────────────────────────────────────── */
-@media (prefers-contrast: high) {
-  .panel {
-    border-width: 2px;
-  }
-
-  .search-input {
-    border-width: 2px;
+    scroll-behavior: auto !important;
   }
 }
