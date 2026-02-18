@@ -71,11 +71,18 @@
 /* ── APP SHELL ────────────────────────────────────────────── */
 .app {
   min-height: 100dvh;
-  background: var(--bg-base);
+  /* Deep base gradient ensures no "void" at bottom */
+  background: radial-gradient(circle at 50% 10%, #0d1b3e 0%, #060b18 100%);
   color: var(--text-primary);
   position: relative;
   overflow-x: hidden;
   transition: background var(--transition-slow), color var(--transition-slow);
+  display: flex;
+  flex-direction: column;
+}
+
+[data-theme="light"] .app {
+  background: radial-gradient(circle at 50% 10%, #dde4f5 0%, #e8edf8 100%);
 }
 
 /* ── AURORA BACKGROUND ────────────────────────────────────── */
@@ -594,21 +601,24 @@
 .hero-bottom {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  /* Force distribution */
   gap: 0;
   position: relative;
   z-index: 1;
   margin-top: 24px;
   padding-top: 20px;
   border-top: 1px solid rgba(255, 255, 255, 0.12);
+  flex-wrap: nowrap !important;
+  /* ABSOLUTELY NO WRAPPING */
 }
 
 .hero-stat {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
   flex: 1;
-  padding: 0 4px;
-  /* Minimal padding for mobile */
+  padding: 0 2px;
   min-width: 0;
   /* Important for flex-shrink on small screens */
   align-items: center;
@@ -1559,6 +1569,17 @@
 
   .brand-name {
     display: none;
+  }
+
+  .header-actions {
+    gap: 4px;
+  }
+
+  .header-btn,
+  .geo-btn {
+    padding: 6px;
+    height: 32px;
+    width: 32px;
   }
 
   .hero-card {

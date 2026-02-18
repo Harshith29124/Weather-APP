@@ -349,8 +349,6 @@ export default function App() {
               heroBg={heroBg(current.weather_code, isDay)}
             />
 
-            <SunCard data={weatherData} />
-
             {/* TABS */}
             <div className="tabs-container">
               {[
@@ -371,6 +369,8 @@ export default function App() {
               <div className="section-label">Hourly Forecast</div>
               <HourlyStrip data={weatherData} />
             </div>
+
+            <SunCard data={weatherData} />
           </div>
 
           {/* RIGHT COLUMN */}
@@ -413,6 +413,10 @@ export default function App() {
             </AnimatePresence>
           </div>
         </div>
+
+        <footer className="footer animate-fade-in">
+          <p className="footer-text">© 2026 ATMOS WEATHER — PRODUCTION GRADE DATA</p>
+        </footer>
       </div>
 
       {/* ERROR TOAST */}
