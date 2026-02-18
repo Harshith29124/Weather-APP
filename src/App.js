@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Search, Eye, MapPin, Sun, Moon, Cloud,
   CloudRain, CloudSnow, CloudLightning, Gauge, Activity,
-  Droplets, Zap, SunMedium, Sunset, Sunrise
+  Droplets, Zap, SunMedium, Sunset, Sunrise, Waves
 } from 'lucide-react';
 import axios from 'axios';
 import { format } from 'date-fns';
@@ -29,6 +29,14 @@ const WxIcon = ({ code, isDay, size = 20 }) => {
   if (code >= 71 && code <= 77) return <CloudSnow {...p} color="#e0f2fe" />;
   if (code >= 95) return <CloudLightning {...p} color="#fbbf24" />;
   return <CloudRain {...p} color="#38bdf8" />;
+};
+
+const heroGradients = (code, isDay) => {
+  if (!isDay) return 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)';
+  if (code <= 1) return 'linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%)';
+  if (code <= 3) return 'linear-gradient(135deg, #334155 0%, #475569 100%)';
+  if (code >= 51 && code <= 82) return 'linear-gradient(135deg, #1e3a8a 0%, #172554 100%)';
+  return 'linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%)';
 };
 
 export default function App() {
@@ -79,27 +87,31 @@ export default function App() {
     } catch { setResults([]); }
   };
 
-  if (loading && !weather) return <div className="app" style={{ justifyContent: 'center', alignItems: 'center' }}><Activity className="animate-pulse" /></div>;
+  if (loading && !weather) return (
+    <div className="app" style={{ justifyContent: 'center', alignItems: 'center' }}>
+      <Activity className="animate-spin" size={48} color="#4fc3f7" />
+    </div>
+  );
 
   return (
     <div className="app">
-      <div className="aurora">
-        <div className="orb" style={{ width: 600, height: 600, background: 'radial-gradient(circle, var(--accent), transparent 70%)', top: '-10%', left: '-10%' }} />
-        <div className="orb" style={{ width: 500, height: 500, background: 'radial-gradient(circle, var(--accent-s), transparent 70%)', bottom: '10%', right: '-5%' }} />
+      <div className="aurora-bg">
+        <div className="orb" style={{ width: 800, height: 800, background: 'var(--accent-blue)', top: '-20%', left: '-10%' }} />
+        <div className="orb" style={{ width: 600, height: 600, background: 'var(--accent-indigo)', bottom: '5%', right: '-5%' }} />
       </div>
 
-      <main className="container">
+      <main className="main-container">
         {/* HEADER */}
-        <header className="header animate-up">
-          <div className="header-top">
-            <div className="brand"><SunMedium size={24} /><span>ATMOS</span></div>
-            <button className="btn" onClick={() => setTheme(t => t === 'dark' ? 'light' : 'dark')}>
-              {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+        <header className="header">
+          <div className="brand-row">
+            <div className="brand"><SunMedium size={28} /><span>ATMOS</span></div>
+            <button className="round-btn" onClick={() => setTheme(t => t === 'dark' ? 'light' : 'dark')}>
+              {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
             </button>
           </div>
 
-          <div className="search">
-            <Search className="search-icon" size={18} />
+          <div className="search-wrap">
+            <Search className="input-icon" size={20} />
             <input
               className="search-input"
               placeholder="Search city..."
@@ -109,11 +121,11 @@ export default function App() {
             />
             <AnimatePresence>
               {showSearch && results.length > 0 && (
-                <motion.div className="dropdown" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+                <motion.div className="search-dropdown" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
                   {results.map((r, i) => (
-                    <div key={i} className="drop-item" onClick={() => { setLoc({ name: r.name, lat: r.latitude, lon: r.longitude, country: r.country }); setShowSearch(false); setSearch(''); }}>
-                      <MapPin size={16} />
-                      <div><p style={{ fontWeight: 600 }}>{r.name}</p><p style={{ fontSize: 12, opacity: 0.6 }}>{r.country}</p></div>
+                    <div key={i} className="dropdown-item" onClick={() => { setLoc({ name: r.name, lat: r.latitude, lon: r.longitude, country: r.country }); setShowSearch(false); setSearch(''); }}>
+                      <MapPin size={18} />
+                      <div><p style={{ fontWeight: 700 }}>{r.name}</p><p style={{ fontSize: 12, opacity: 0.6 }}>{r.country}</p></div>
                     </div>
                   ))}
                 </motion.div>
@@ -122,106 +134,106 @@ export default function App() {
           </div>
         </header>
 
-        <section className="main-grid">
-          {/* LEFT COLUMN: HERO & NAVIGATION */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            <div className="card hero animate-up" style={{ background: 'linear-gradient(135deg, #1e3a8a, #0c2461)' }}>
-              <div className="hero-header">
+        <div className="content-grid">
+          {/* LEFT: HERO & TABS */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+            <div className="glass-pane hero-card" style={{ background: heroGradients(weather.current.weather_code, weather.current.is_day) }}>
+              <div className="hero-main">
                 <div>
-                  <h2 className="brand" style={{ fontSize: '1.5rem' }}>{loc.name}</h2>
-                  <p style={{ opacity: 0.6, fontSize: '0.8rem' }}>{loc.country} • {format(time, 'HH:mm')}</p>
+                  <h2 className="hero-city">{loc.name}</h2>
+                  <p style={{ opacity: 0.8, fontWeight: 500, fontSize: 14 }}>{loc.country} • {format(time, 'HH:mm')}</p>
                 </div>
-                <WxIcon code={weather.current.weather_code} isDay={weather.current.is_day} size={48} />
+                <WxIcon code={weather.current.weather_code} isDay={weather.current.is_day} size={64} />
               </div>
 
-              <div style={{ margin: '24px 0' }}>
+              <div>
                 <h1 className="hero-temp">{Math.round(weather.current.temperature_2m)}°</h1>
-                <p style={{ fontSize: '1.2rem' }}>{WX_DESC[weather.current.weather_code]}</p>
-                <p style={{ opacity: 0.6 }}>Feels like {Math.round(weather.current.apparent_temperature)}°</p>
+                <p style={{ fontSize: '1.2rem', fontWeight: 600 }}>{WX_DESC[weather.current.weather_code]}</p>
+                <p style={{ opacity: 0.7, fontSize: 14 }}>Feels like {Math.round(weather.current.apparent_temperature)}°</p>
               </div>
 
               <div className="hero-stats">
-                <div className="stat-item"><span className="stat-lab">High</span><span className="stat-val">{Math.round(weather.daily.temperature_2m_max[0])}°</span></div>
-                <div className="stat-item"><span className="stat-lab">Low</span><span className="stat-val">{Math.round(weather.daily.temperature_2m_min[0])}°</span></div>
-                <div className="stat-item"><span className="stat-lab">Wind</span><span className="stat-val">{Math.round(weather.current.wind_speed_10m)} km/h</span></div>
-                <div className="stat-item"><span className="stat-lab">Rain</span><span className="stat-val">{weather.hourly.precipitation_probability[0]}%</span></div>
+                <div className="hero-stat"><span className="h-stat-label">High</span><span className="h-stat-val">{Math.round(weather.daily.temperature_2m_max[0])}°</span></div>
+                <div className="hero-stat"><span className="h-stat-label">Low</span><span className="h-stat-val">{Math.round(weather.daily.temperature_2m_min[0])}°</span></div>
+                <div className="hero-stat"><span className="h-stat-label">Humidity</span><span className="h-stat-val">{weather.current.relative_humidity_2m}%</span></div>
+                <div className="hero-stat"><span className="h-stat-label">Wind</span><span className="h-stat-val">{Math.round(weather.current.wind_speed_10m)} km/h</span></div>
               </div>
             </div>
 
-            <nav className="tabs animate-up" style={{ animationDelay: '0.1s' }}>
+            <nav className="nav-tabs">
               {['Current', 'Hourly', '7-Day', 'Details'].map(t => (
-                <button key={t} className={`tab ${view === t.toLowerCase() ? 'active' : ''}`} onClick={() => setView(t.toLowerCase())}>{t}</button>
+                <button key={t} className={`nav-tab ${view === t.toLowerCase() ? 'active' : ''}`} onClick={() => setView(t.toLowerCase())}>{t}</button>
               ))}
             </nav>
 
-            <div className="card animate-up" style={{ animationDelay: '0.2s' }}>
-              <h3 className="label">Hourly</h3>
-              <div className="hourly-container">
+            <div className="glass-pane tile-card">
+              <h3 className="section-lab">Next 12 Hours</h3>
+              <div className="hourly-strip">
                 {weather.hourly.time.slice(0, 12).map((t, i) => (
-                  <div key={i} className="hour-card">
+                  <div key={i} className="hour-tile">
                     <span style={{ fontSize: 12, opacity: 0.6 }}>{format(new Date(t), 'HH:mm')}</span>
                     <WxIcon code={weather.hourly.weather_code[i]} isDay={weather.hourly.is_day[i]} />
-                    <span style={{ fontWeight: 700 }}>{Math.round(weather.hourly.temperature_2m[i])}°</span>
+                    <span style={{ fontWeight: 800 }}>{Math.round(weather.hourly.temperature_2m[i])}°</span>
                   </div>
                 ))}
               </div>
             </div>
           </div>
 
-          {/* RIGHT COLUMN: DYNAMIC VIEWS */}
-          <div className="animate-up" style={{ animationDelay: '0.3s' }}>
+          {/* RIGHT: DETAILS */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
             {view === 'current' && (
-              <div className="detail-grid">
+              <div className="detail-tiles">
                 {[
-                  { lab: 'Pressure', val: weather.current.pressure_msl, unit: ' hPa', icon: <Gauge size={16} /> },
-                  { lab: 'Visibility', val: Math.round(weather.current.visibility / 1000), unit: ' km', icon: <Eye size={16} /> },
-                  { lab: 'Humidity', val: weather.current.relative_humidity_2m, unit: '%', icon: <Droplets size={16} /> },
-                  { lab: 'UV Index', val: weather.current.uv_index, unit: '', icon: <Zap size={16} /> },
-                  { lab: 'Sunrise', val: format(new Date(weather.daily.sunrise[0]), 'HH:mm'), unit: '', icon: <Sunrise size={16} /> },
-                  { lab: 'Sunset', val: format(new Date(weather.daily.sunset[0]), 'HH:mm'), unit: '', icon: <Sunset size={16} /> },
+                  { lab: 'Pressure', val: weather.current.pressure_msl, unit: ' hPa', icon: <Gauge size={18} /> },
+                  { lab: 'Visibility', val: Math.round(weather.current.visibility / 1000), unit: ' km', icon: <Eye size={18} /> },
+                  { lab: 'Humidity', val: weather.current.relative_humidity_2m, unit: '%', icon: <Droplets size={18} /> },
+                  { lab: 'UV Index', val: weather.current.uv_index, unit: '', icon: <Zap size={18} /> },
+                  { lab: 'Sunrise', val: format(new Date(weather.daily.sunrise[0]), 'HH:mm'), unit: '', icon: <Sunrise size={18} /> },
+                  { lab: 'Sunset', val: format(new Date(weather.daily.sunset[0]), 'HH:mm'), unit: '', icon: <Sunset size={18} /> },
                 ].map((d, i) => (
-                  <div key={i} className="tile">
-                    <div className="tile-lab">{d.icon}<span>{d.lab}</span></div>
-                    <div className="tile-val">{d.val}<span style={{ fontSize: 14, fontWeight: 400, opacity: 0.6 }}>{d.unit}</span></div>
+                  <div key={i} className="glass-pane tile-card">
+                    <div className="section-lab" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>{d.icon}<span>{d.lab}</span></div>
+                    <div style={{ fontSize: '1.5rem', fontWeight: 800 }}>{d.val}<span style={{ fontSize: 14, fontWeight: 400, opacity: 0.5 }}>{d.unit}</span></div>
                   </div>
                 ))}
               </div>
             )}
 
             {view === '7-day' && (
-              <div className="card" style={{ gap: 12 }}>
-                <h3 className="label">Forecast</h3>
+              <div className="glass-pane tile-card">
+                <h3 className="section-lab">7-Day Forecast</h3>
                 {weather.daily.time.map((d, i) => (
-                  <div key={i} className="flex-row" style={{ padding: '8px 0', borderBottom: i < 6 ? '1px solid var(--glass-border)' : 'none' }}>
-                    <span style={{ width: 60, fontWeight: 600 }}>{i === 0 ? 'Today' : format(new Date(d), 'EEE')}</span>
-                    <WxIcon code={weather.daily.weather_code[i]} isDay={1} size={24} />
-                    <div style={{ flex: 1, textAlign: 'right', fontWeight: 700 }}>{Math.round(weather.daily.temperature_2m_max[i])}° <span style={{ opacity: 0.4, fontWeight: 400 }}>{Math.round(weather.daily.temperature_2m_min[i])}°</span></div>
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 0', borderBottom: i < 6 ? '1px solid var(--glass-edge)' : 'none' }}>
+                    <span style={{ width: 80, fontWeight: 700 }}>{i === 0 ? 'Today' : format(new Date(d), 'EEE')}</span>
+                    <WxIcon code={weather.daily.weather_code[i]} isDay={1} size={28} />
+                    <div style={{ fontWeight: 800 }}>{Math.round(weather.daily.temperature_2m_max[i])}° <span style={{ opacity: 0.4, fontWeight: 400 }}>{Math.round(weather.daily.temperature_2m_min[i])}°</span></div>
                   </div>
                 ))}
               </div>
             )}
 
             {(view === 'hourly' || view === 'details') && (
-              <div className="card" style={{ height: 300 }}>
-                <h3 className="label">Temperature Trend</h3>
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={weather.hourly.time.slice(0, 24).map((t, i) => ({ time: format(new Date(t), 'HH'), temp: weather.hourly.temperature_2m[i] }))}>
-                    <defs><linearGradient id="color" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="var(--accent)" stopOpacity={0.3} /><stop offset="95%" stopColor="var(--accent)" stopOpacity={0} /></linearGradient></defs>
-                    <CartesianGrid strokeOpacity={0.1} vertical={false} />
-                    <XAxis dataKey="time" hide />
-                    <YAxis hide domain={['dataMin - 2', 'dataMax + 2']} />
-                    <Tooltip cursor={false} contentStyle={{ background: 'var(--bg-app)', border: 'none', borderRadius: 12 }} />
-                    <Area type="monotone" dataKey="temp" stroke="var(--accent)" fillOpacity={1} fill="url(#color)" />
-                  </AreaChart>
-                </ResponsiveContainer>
+              <div className="glass-pane tile-card">
+                <h3 className="section-lab">24-Hour Trend</h3>
+                <div className="chart-box">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={weather.hourly.time.slice(0, 24).map((t, i) => ({ time: format(new Date(t), 'HH'), temp: weather.hourly.temperature_2m[i] }))}>
+                      <defs><linearGradient id="grad" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="var(--accent-blue)" stopOpacity={0.3} /><stop offset="95%" stopColor="var(--accent-blue)" stopOpacity={0} /></linearGradient></defs>
+                      <CartesianGrid strokeOpacity={0.05} vertical={false} />
+                      <XAxis dataKey="time" hide />
+                      <YAxis hide domain={['dataMin - 2', 'dataMax + 2']} />
+                      <Tooltip cursor={false} contentStyle={{ background: 'var(--bg-deep)', border: 'none', borderRadius: 16, boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }} />
+                      <Area type="monotone" dataKey="temp" stroke="var(--accent-blue)" fillOpacity={1} fill="url(#grad)" strokeWidth={3} />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
               </div>
             )}
           </div>
-        </section>
+        </div>
 
-        <footer className="footer">
-          <p>© 2026 ATMOS WEATHER • PRECISION FORECAST DATA</p>
-        </footer>
+        <footer className="footer">© 2026 ATMOS WEATHER • PRECISION FORECASTS</footer>
       </main>
     </div>
   );
