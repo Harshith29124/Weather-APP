@@ -52,7 +52,7 @@
 /* ── LIGHT THEME ───────────────────────────────────────────────────────────── */
 [data-theme="light"] {
   --bg-deep: #eef2f8;
-  --bg-surface: rgba(255, 255, 255, 0.72);
+  --bg-surface: rgba(255, 255, 255, 0.88);
   --bg-glass-1: rgba(15, 30, 60, 0.04);
   --bg-glass-2: rgba(15, 30, 60, 0.07);
   --bg-glass-3: rgba(15, 30, 60, 0.11);
@@ -62,12 +62,12 @@
   --text-secondary: #475569;
   --text-muted: #94a3b8;
 
-  --shadow-panel: 0 8px 32px rgba(15, 23, 42, 0.1), 0 1px 0 rgba(255, 255, 255, 0.9) inset;
+  --shadow-panel: 0 4px 24px rgba(15, 23, 42, 0.12), 0 1px 0 rgba(255, 255, 255, 1) inset;
   --shadow-card: 0 4px 16px rgba(15, 23, 42, 0.08);
 }
 
 [data-theme="light"] .orb {
-  opacity: 0.08;
+  opacity: 0.15;
 }
 
 [data-theme="light"] .tab-btn.active {
@@ -261,17 +261,33 @@ input:focus:not(:focus-visible) {
 /* ≥ 1024px: side-by-side — left sidebar + right content */
 @media (min-width: 1024px) {
   .main-content {
-    grid-template-columns: minmax(360px, 420px) 1fr;
+    grid-template-columns: minmax(320px, 380px) 1fr;
     align-items: start;
   }
 }
 
+/* Explicit 1-column logic for tablet/mobile */
+@media (max-width: 1023px) {
+  .main-content {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Columns */
-.left-col,
+.left-col {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 2vw, 16px);
+  /* Bug 9: creates isolation for dropdown z-index escaping */
+  isolation: isolate;
+}
+
 .right-col {
   display: flex;
   flex-direction: column;
   gap: clamp(12px, 2vw, 16px);
+  /* Bug 1: container query root for detail-grid */
+  container-type: inline-size;
 }
 
 /* ── HEADER ────────────────────────────────────────────────────────────────── */
@@ -403,7 +419,8 @@ input:focus:not(:focus-visible) {
   border: 1px solid var(--glass-stroke);
   border-radius: var(--r-lg);
   overflow: hidden;
-  z-index: 200;
+  /* Bug 9: elevated z-index for search dropdown */
+  z-index: 1000;
   box-shadow: var(--shadow-panel);
   list-style: none;
 }
@@ -449,7 +466,9 @@ input:focus:not(:focus-visible) {
   padding: clamp(20px, 4vw, 32px);
   box-shadow: var(--shadow-panel);
   position: relative;
-  overflow: hidden;
+  /* Bug 3: removed overflow: hidden to allow horizontal scrolls to work correctly on iOS */
+  /* instead we clip the children that need it using other methods */
+  overflow: visible;
 }
 
 .panel::before {
@@ -458,6 +477,8 @@ input:focus:not(:focus-visible) {
   inset: 0;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 60%);
   pointer-events: none;
+  /* Bug 3: use clip-path to maintain rounded corners on decoration without overflow: hidden */
+  clip-path: inset(0 round var(--r-xl));
   border-radius: inherit;
 }
 
@@ -702,6 +723,8 @@ input:focus:not(:focus-visible) {
   overflow-x: auto;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
+  /* Bug 4: scroll padding for active tab view */
+  scroll-padding-inline: 4px;
   /* Prevent the pill shape from collapsing */
   flex-shrink: 0;
 }
@@ -711,7 +734,8 @@ input:focus:not(:focus-visible) {
 }
 
 .tab-btn {
-  flex: 1;
+  /* Bug 4: prevent tab shrinking below content size */
+  flex: 0 0 auto;
   /* Minimum width so text never disappears */
   min-width: 68px;
   /* Minimum HEIGHT of 44px — the WCAG touch-target requirement */
@@ -743,46 +767,29 @@ input:focus:not(:focus-visible) {
   box-shadow: 0 2px 12px rgba(56, 189, 248, 0.35);
 }
 
-/* ── DETAIL TILES — Mobile-First Grid ───────────────────────────────────────
-   Breakpoint logic (as requested):
-     xs  < 480px  → 1 column  (one card per row — no squishing on tiny phones)
-     sm  ≥ 480px  → 2 columns (tablet portrait / large phone landscape)
-     md  ≥ 768px  → 3 columns (small tablet / large phone in landscape)
-     lg  ≥ 1024px (inside right-col sidebar) → back to 2 col (narrower space)
-     xl  ≥ 1280px → 4 columns (wide desktop with right-col having full room)
-
-   We use auto-fill + minmax as a secondary guard so cards never overflow.
+/* ── DETAIL TILES — Container-Based Grid (Bug 1 Fix) ─────────────────────────
+     Instead of raw viewport media queries, we respond to the .right-col width.
 */
 .detail-grid {
   display: grid;
-  /* Mobile default: 1 column — full-width cards on small phones */
+  /* Default: 1 column */
   grid-template-columns: 1fr;
   gap: clamp(10px, 2vw, 16px);
 }
 
-/* ≥ 480px: 2 columns — tablets + large phones */
-@media (min-width: 480px) {
+@container (min-width: 380px) {
   .detail-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-/* ≥ 768px: 3 columns — tablet landscape / small desktop */
-@media (min-width: 768px) {
+@container (min-width: 650px) {
   .detail-grid {
     grid-template-columns: repeat(3, 1fr);
   }
 }
 
-/* ≥ 1024px: inside the right-col sidebar (narrower), drop back to 2 col */
-@media (min-width: 1024px) {
-  .detail-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-/* ≥ 1280px: enough horizontal space for 4 columns in the sidebar */
-@media (min-width: 1280px) {
+@container (min-width: 950px) {
   .detail-grid {
     grid-template-columns: repeat(4, 1fr);
   }
@@ -870,6 +877,10 @@ input:focus:not(:focus-visible) {
   font-weight: 700;
   font-size: 0.88rem;
   white-space: nowrap;
+  /* Bug 2: allow truncation of long day strings */
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .forecast-icon {
@@ -964,6 +975,8 @@ input:focus:not(:focus-visible) {
   display: flex;
   align-items: center;
   gap: 12px;
+  /* Bug 7: prevent overflow in grid cell */
+  min-width: 0;
 }
 
 .sun-label {
@@ -979,6 +992,10 @@ input:focus:not(:focus-visible) {
   font-size: 1.4rem;
   font-weight: 800;
   font-family: var(--font-mono);
+  /* Bug 7: prevent text overflow on high font-scaling */
+  word-break: break-all;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .daylight-bar-wrap {
@@ -1066,6 +1083,10 @@ input:focus:not(:focus-visible) {
   font-size: 0.68rem;
   color: var(--text-secondary);
   font-weight: 600;
+  /* Bug 6: prevent wrapping and overflow inconsistently */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* ── LABELS ────────────────────────────────────────────────────────────────── */
@@ -1247,17 +1268,23 @@ input:focus:not(:focus-visible) {
 /* xs phones < 480px */
 @media (max-width: 479px) {
 
-  /* hero-stats: drop to 2×2 grid so values stay legible */
+  /* hero-stats: drop to 2×2 grid so values stay legible (Bug 5 fix check) */
   .hero-stats {
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
   }
 
   /* forecast: hide the descriptive condition text, keep icon + temps */
+  /* Bug 2: fix overflow with max-width on end column */
   .forecast-row {
     grid-template-columns: 1fr auto auto;
     gap: 8px;
     padding: 12px 12px;
+    overflow: hidden;
+  }
+
+  .forecast-temps {
+    max-width: 80px;
   }
 
   .forecast-condition {
