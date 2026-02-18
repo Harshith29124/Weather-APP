@@ -1,8 +1,8 @@
-# 🌤️ Nimbus Weather — 2026 Standard
+# 🌤️ Atmos Weather — 2026 Standard
 
-![Nimbus Dashboard](https://raw.githubusercontent.com/Harshith29124/Weather-APP/main/public/logo512.png)
+![Atmos Dashboard](https://raw.githubusercontent.com/Harshith29124/Weather-APP/main/public/logo512.png)
 
-Nimbus is a production-level, ultra-modern weather application designed with 2026 aesthetics. It features a stunning **Aurora UI**, deep **Glassmorphism**, and high-precision data from Open-Meteo.
+Atmos is a production-level, ultra-modern weather application designed with 2026 aesthetics. It features a stunning **Aurora UI**, deep **Glassmorphism**, and high-precision data from Open-Meteo.
 
 ## ✨ Elite Features
 
@@ -49,7 +49,7 @@ The application will launch at `http://localhost:3000`.
 
 ## 🛰️ API System
 
-Nimbus integrates three specialized Open-Meteo endpoints for absolute reliability:
+Atmos integrates three specialized Open-Meteo endpoints for absolute reliability:
 
 1. **Geocoding Engine**: `https://geocoding-api.open-meteo.com` (Sub-300ms search responses)
 2. **Forecast Engine**: `https://api.open-meteo.com` (Current, Hourly, Daily & Historical)
@@ -77,7 +77,7 @@ Weather-APP/
 
 ## 📜 License
 
-MIT © 2026 Nimbus Team. Built for excellence.
+MIT © 2026 Atmos Team. Built for excellence.
 
 ---
 Built with ❤️ by [Harshith](https://github.com/Harshith29124)

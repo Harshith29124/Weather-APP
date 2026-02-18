@@ -269,7 +269,7 @@ export default function App() {
             <div className="brand-icon">
               <SunMedium size={20} color="#fff" strokeWidth={2} />
             </div>
-            <span className="brand-name">Nimbus</span>
+            <span className="brand-name">Atmos</span>
           </div>
 
           {/* Search bar */}
@@ -442,7 +442,7 @@ function LoadingScreen() {
         <div className="aurora-orb" /><div className="aurora-orb" />
       </div>
       <div className="loading-logo"><SunMedium size={32} color="#fff" /></div>
-      <div className="loading-text">NIMBUS WEATHER</div>
+      <div className="loading-text">ATMOS WEATHER</div>
       <div className="loading-dots">
         <div className="loading-dot" />
         <div className="loading-dot" />
