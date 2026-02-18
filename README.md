@@ -1,197 +1,83 @@
-# WeatherPro X - Modern Weather Application
+# 🌤️ Nimbus Weather — 2026 Standard
 
-A modern, responsive weather application featuring comprehensive weather data including current conditions, 7-day forecasts, historical weather, and marine forecasts.
+![Nimbus Dashboard](https://raw.githubusercontent.com/Harshith29124/Weather-APP/main/public/logo512.png)
 
-## Features
+Nimbus is a production-level, ultra-modern weather application designed with 2026 aesthetics. It features a stunning **Aurora UI**, deep **Glassmorphism**, and high-precision data from Open-Meteo.
 
-- **Current Weather**: Real-time weather conditions with detailed metrics
-- **7-Day Forecast**: Extended weather predictions with hourly breakdowns
-- **Historical Weather**: View past 7 days of weather data
-- **Marine Weather**: Coastal and marine conditions (for applicable locations)
-- **Modern UI**: Glassmorphism design with smooth animations
-- **Fully Responsive**: Optimized for mobile, tablet, and desktop devices
-- **Cross-Platform**: Works on all modern browsers
+## ✨ Elite Features
 
-## Tech Stack
+- **🌈 Dynamic Aurora Background**: 4 drift-animated gradient orbs that react to the time of day and theme.
+- **💎 Glassmorphism 2.0**: Sophisticated layered transparency with `backdrop-filter: blur(20px)` and subtle inner glows.
+- **📍 Smart Geolocation**: One-tap "My Location" support using browser GPS for hyper-local forecasts.
+- **🕒 Live Real-Time Clock**: High-precision clock with second-level updates and adaptive date formatting.
+- **📊 Interactive Data Visualization**: Beautiful temperature and wave height trends powered by **Recharts**.
+- **🧭 Sun Position Tracking**: Live SVG-based celestial arc showing sunrise, sunset, and current sun position.
+- **🌊 Marine Forecasting**: Comprehensive wave heights, swell, period, and wind wave data for coastal locations.
+- **⏳ Historical Analysis**: Access past weather data with hourly granularity for the last 7 days.
+- **🌓 Adaptive Theming**: Seamless transition between "Midnight Navy" dark mode and "Crystal Blue" light mode.
 
-- React 18.3.1
-- Framer Motion (animations)
-- Axios (API calls)
-- Lucide React (icons)
-- date-fns (date formatting)
-- Open-Meteo API (weather data - free, no API key required)
-- CSS3 with Glassmorphism effects
+## 🚀 Tech Stack
 
-## Setup Instructions
+- **Framework**: React 18
+- **Animations**: Framer Motion
+- **Data Visualization**: Recharts
+- **Icons**: Lucide React
+- **Time/Date**: date-fns
+- **Networking**: Axios
+- **API**: Open-Meteo (High-availability, free, no-key required)
+- **Styling**: Vanilla CSS with modern flex/grid and custom design tokens
 
-### 1. Install Dependencies
+## 🛠️ Quick Start
+
+### 1. Build the Foundation
+Clone the repository and install the production dependencies:
 
 ```bash
-cd weather-app
+git clone https://github.com/Harshith29124/Weather-APP.git
+cd Weather-APP
 npm install
 ```
 
-### 2. Run the Application
+### 2. Launch the Experience
+Start the development server:
 
 ```bash
 npm start
 ```
 
-The app will open at `http://localhost:3000`
+The application will launch at `http://localhost:3000`.
 
-**Note:** No API key is required! The app uses the free Open-Meteo API.
+## 🛰️ API System
 
-## API Information
+Nimbus integrates three specialized Open-Meteo endpoints for absolute reliability:
 
-This app uses three Open-Meteo API endpoints:
+1. **Geocoding Engine**: `https://geocoding-api.open-meteo.com` (Sub-300ms search responses)
+2. **Forecast Engine**: `https://api.open-meteo.com` (Current, Hourly, Daily & Historical)
+3. **Marine Engine**: `https://marine-api.open-meteo.com` (Oceanic metrics & Wave physics)
 
-1. **Geocoding API**: `https://geocoding-api.open-meteo.com/v1/search`
-   - Search for locations by name
-   - Returns coordinates and location details
+## 🎨 Design Philosophy
 
-2. **Weather Forecast API**: `https://api.open-meteo.com/v1/forecast`
-   - Current weather conditions
-   - 7-day forecast
-   - Historical weather data
-   - Hourly predictions
+- **Consistency First**: Hardcoded white text on all hero cards to ensure legibility against deep gradients.
+- **Accessibility**: High-contrast ratios and semantic HTML for screen readers.
+- **Performance**: Memoized components and hardware-accelerated CSS animations.
+- **Responsive**: Fully optimized for everything from ultra-wide monitors to 360px mobile devices.
 
-3. **Marine Weather API**: `https://marine-api.open-meteo.com/v1/marine`
-   - Wave height and direction
-   - Wave period
-   - Swell information
-   - Wind waves
+## 📂 Project Structure
 
-All APIs are free and don't require authentication.
-
-## Usage
-
-### Search Locations
-- Click the location button or search icon
-- Enter city name (e.g., "New York", "London", "Tokyo")
-- Select from search results
-
-### Navigate Tabs
-- **Current**: View real-time weather conditions
-- **Historical**: Check past 7 days of weather data
-- **Marine**: View marine conditions (coastal areas only)
-
-## Features Breakdown
-
-### Current Weather
-- Temperature with feels-like
-- Weather condition with icon
-- Wind speed and direction
-- Humidity levels
-- Visibility range
-- Barometric pressure
-- UV index
-- Precipitation
-- Sunrise/sunset times
-
-### 7-Day Forecast
-- Daily high/low temperatures
-- Weather conditions with icons
-- Precipitation probability
-- Visual temperature range bars
-
-### Historical Weather
-- Past 7 days of weather data
-- Hourly breakdown for selected day
-- Temperature ranges
-- Precipitation data
-
-### Marine Weather
-- Wave height predictions
-- Wave direction and period
-- Swell wave height
-- Wind wave height
-- 7-day marine forecast
-
-## Design Features
-
-### Modern UI
-- Glassmorphism with backdrop blur
-- Smooth animations and transitions
-- Responsive hover states
-- Touch-optimized for mobile
-- Dark mode support (system preference)
-
-### Responsive Breakpoints
-- Desktop: 1400px max-width
-- Tablet: 768px and below
-- Mobile: 480px and below
-- Very small screens: 375px and below
-
-### Accessibility
-- Reduced motion support
-- Semantic HTML
-- Keyboard navigation
-- High contrast ratios
-- Focus indicators
-
-## Browser Support
-
-- Chrome/Edge (latest)
-- Firefox (latest)
-- Safari (latest)
-- Mobile browsers (iOS Safari, Chrome Mobile)
-
-## Performance Optimizations
-
-- Optimized animations with Framer Motion
-- Efficient API calls with error handling
-- CSS backdrop-filter for hardware acceleration
-- Memoized computations with useMemo
-- Optimized callbacks with useCallback
-
-## Troubleshooting
-
-### Marine Data Not Available
-- Marine data only works for coastal locations
-- Try searching for a coastal city (e.g., "Miami", "Sydney", "Mumbai")
-
-### Location Not Found
-- Check spelling of location name
-- Try using major city names
-- Use official city names in English
-
-### App Not Loading
-- Check your internet connection
-- Clear browser cache
-- Try a different browser
-
-## Development
-
-### Available Scripts
-
-- `npm start` - Run development server
-- `npm test` - Run tests
-- `npm run build` - Build for production
-- `npm run eject` - Eject from Create React App (not recommended)
-
-### Project Structure
-
-```
-weather-app/
-├── public/          # Static files
+```text
+Weather-APP/
+├── public/          # HTML5 Template & Static Assets
 ├── src/
-│   ├── App.js       # Main application component
-│   ├── App.css      # Application styles
+│   ├── App.js       # Core Application Logic & Sub-components
+│   ├── App.css      # 2026 Design System & Tokens
 │   ├── index.js     # Entry point
-│   └── index.css    # Global styles
-└── package.json     # Dependencies
+│   └── index.css    # Global Reset & Typography
+└── package.json     # Orchestration & Dependencies
 ```
 
-## License
+## 📜 License
 
-MIT License - feel free to use this project for learning and development.
-
-## Credits
-
-- Weather data: [Open-Meteo](https://open-meteo.com/)
-- Icons: [Lucide React](https://lucide.dev/)
-- Design inspiration: Modern glassmorphism UI trends
+MIT © 2026 Nimbus Team. Built for excellence.
 
 ---
-
-Built with modern web technologies and best practices.
+Built with ❤️ by [Harshith](https://github.com/Harshith29124)
