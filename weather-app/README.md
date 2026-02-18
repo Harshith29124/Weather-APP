@@ -1,70 +1,184 @@
-# Getting Started with Create React App
+# WeatherPro X - 2026 iOS Liquid Glass Design
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A modern, responsive weather application featuring iOS liquid glass design principles with comprehensive weather data including current conditions, 7-day forecasts, historical weather, and marine forecasts.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- **Current Weather**: Real-time weather conditions with detailed metrics
+- **7-Day Forecast**: Extended weather predictions with hourly breakdowns
+- **Historical Weather**: View past weather data and trends
+- **Marine Weather**: Coastal and marine conditions (for applicable locations)
+- **iOS Liquid Glass Design**: Modern glassmorphism UI with smooth animations
+- **Fully Responsive**: Optimized for mobile, tablet, and desktop devices
+- **Cross-Platform**: Works on all modern browsers and platforms
 
-### `npm start`
+## Tech Stack
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- React 19.2.4
+- Framer Motion (animations)
+- Axios (API calls)
+- Lucide React (icons)
+- WeatherAPI.com (data source)
+- CSS3 with Glassmorphism effects
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Setup Instructions
 
-### `npm test`
+### 1. Install Dependencies
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```bash
+cd weather-app
+npm install
+```
 
-### `npm run build`
+### 2. Get API Key
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. Visit [WeatherAPI.com](https://www.weatherapi.com/)
+2. Sign up for a free account
+3. Get your API key from the dashboard
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 3. Configure API Key
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Open `src/App.js` and replace the API key on line 13:
 
-### `npm run eject`
+```javascript
+const API_KEY = 'your_actual_api_key_here';
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### 4. Run the Application
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```bash
+npm start
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+The app will open at `http://localhost:3000`
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Usage
 
-## Learn More
+### Search Locations
+- Enter city name (e.g., "New York")
+- Enter ZIP code (e.g., "10001")
+- Enter coordinates (e.g., "40.7128,-74.0060")
+- Enter airport code (e.g., "JFK")
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Navigate Tabs
+- **Current**: View real-time weather conditions
+- **Forecast**: See 7-day weather predictions
+- **Historical**: Check yesterday's weather data
+- **Marine**: View marine conditions (coastal areas only)
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Features Breakdown
 
-### Code Splitting
+### Current Weather
+- Temperature with feels-like
+- Weather condition with icon
+- Wind speed and direction
+- Humidity levels
+- Visibility range
+- Barometric pressure
+- UV index
+- Air Quality Index (AQI)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### 7-Day Forecast
+- Daily high/low temperatures
+- Weather conditions
+- Precipitation probability
+- Wind speed
+- Sunrise/sunset times
 
-### Analyzing the Bundle Size
+### Historical Weather
+- Previous day's conditions
+- Temperature ranges
+- Hourly breakdown
+- Precipitation data
+- Wind and visibility metrics
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### Marine Weather
+- Wave height predictions
+- Wind conditions
+- Water temperature
+- Visibility for boating
 
-### Making a Progressive Web App
+## Design Features
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+### iOS Liquid Glass Effect
+- Glassmorphism with backdrop blur
+- Smooth animations and transitions
+- Gradient backgrounds
+- Responsive hover states
+- Touch-optimized for mobile
 
-### Advanced Configuration
+### Responsive Breakpoints
+- Desktop: 1400px max-width
+- Tablet: 768px and below
+- Mobile: 480px and below
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### Accessibility
+- Reduced motion support
+- Semantic HTML
+- ARIA labels
+- Keyboard navigation
+- High contrast ratios
 
-### Deployment
+## Browser Support
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+- Chrome/Edge (latest)
+- Firefox (latest)
+- Safari (latest)
+- Mobile browsers (iOS Safari, Chrome Mobile)
 
-### `npm run build` fails to minify
+## Performance Optimizations
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- Lazy loading components
+- Optimized animations with Framer Motion
+- Efficient API calls with error handling
+- CSS backdrop-filter for hardware acceleration
+- Responsive images
+
+## API Rate Limits
+
+Free tier of WeatherAPI.com includes:
+- 1,000,000 calls/month
+- Current weather
+- 3-day forecast (extendable to 7 days)
+- Historical data (1 day)
+- Marine data
+
+## Troubleshooting
+
+### API Key Issues
+- Ensure your API key is valid and active
+- Check if you've exceeded rate limits
+- Verify the API key has proper permissions
+
+### Marine Data Not Available
+- Marine data only works for coastal locations
+- Try searching for a coastal city
+
+### Location Not Found
+- Check spelling of location name
+- Try using coordinates instead
+- Use official city names
+
+## Future Enhancements
+
+- Weather alerts and notifications
+- Multiple location favorites
+- Weather radar maps
+- Extended historical data (30 days)
+- Weather comparison tool
+- Dark/light theme toggle
+- Offline mode with cached data
+
+## License
+
+MIT License - feel free to use this project for learning and development.
+
+## Credits
+
+- Weather data: [WeatherAPI.com](https://www.weatherapi.com/)
+- Icons: [Lucide React](https://lucide.dev/)
+- Design inspiration: iOS 17+ design language
+
+---
+
+Built with ❤️ using modern web technologies and 2026 design standards.

@@ -1,0 +1,62 @@
+╔══════════════════════════════════════════════════════════════╗
+║                                                              ║
+║              WeatherPro X - Installation Guide               ║
+║                  iOS Liquid Glass Design                     ║
+║                                                              ║
+╚══════════════════════════════════════════════════════════════╝
+
+QUICK START (3 STEPS):
+
+1. INSTALL DEPENDENCIES
+   ────────────────────
+   Open terminal in the weather-app folder and run:
+   
+   npm install
+
+2. GET FREE API KEY
+   ────────────────
+   • Visit: https://www.weatherapi.com/signup.aspx
+   • Sign up (free - 1M calls/month)
+   • Copy your API key from dashboard
+
+3. ADD API KEY
+   ───────────
+   • Open: src/App.js
+   • Find line 13
+   • Replace placeholder with your API key:
+   
+   const API_KEY = 'your_actual_api_key_here';
+
+4. START THE APP
+   ─────────────
+   npm start
+   
+   App opens at: http://localhost:3000
+
+═══════════════════════════════════════════════════════════════
+
+FEATURES:
+✓ Current weather with detailed metrics
+✓ 7-day forecast with hourly data
+✓ Historical weather (yesterday)
+✓ Marine weather (coastal locations)
+✓ iOS liquid glass design
+✓ Fully responsive (mobile, tablet, desktop)
+✓ Cross-platform compatible
+
+═══════════════════════════════════════════════════════════════
+
+NEED HELP?
+• Read: README.md (overview)
+• Read: SETUP_GUIDE.md (detailed instructions)
+• Check: Browser console (F12) for errors
+
+═══════════════════════════════════════════════════════════════
+
+DEPLOYMENT:
+• Build: npm run build
+• Deploy to: Netlify, Vercel, GitHub Pages, etc.
+
+═══════════════════════════════════════════════════════════════
+
+Enjoy your modern weather app! 🌤️
