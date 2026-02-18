@@ -232,23 +232,36 @@ input:focus:not(:focus-visible) {
   }
 }
 
-/* ── MAIN CONTENT ──────────────────────────────────────────────────────────── */
+/* ── MAIN CONTENT — Mobile-First ───────────────────────────────────────────── */
+/*
+  Breakpoints:
+    xs  < 480px   → 1-col stack, minimal padding
+    sm  ≥ 480px   → slightly more padding
+    md  ≥ 768px   → still single column, wider padding
+    lg  ≥ 1024px  → 2-column side-by-side layout
+*/
 .main-content {
   position: relative;
   z-index: 1;
+  /* width: 100% so it fills the viewport on every device */
   width: 100%;
-  max-width: 1440px;
+  /* 1200px cap prevents over-stretching on ultra-wide screens */
+  max-width: 1200px;
   margin: 0 auto;
+  /* clamp: 12px on mobile, scales to 32px on desktop */
   padding: clamp(12px, 4vw, 32px);
+  /* Mobile-first: single column stack */
   display: grid;
   grid-template-columns: 1fr;
   gap: clamp(12px, 3vw, 24px);
+  /* flex: 1 makes it fill remaining vertical space inside .app flex column */
   flex: 1;
 }
 
+/* ≥ 1024px: side-by-side — left sidebar + right content */
 @media (min-width: 1024px) {
   .main-content {
-    grid-template-columns: minmax(380px, 460px) 1fr;
+    grid-template-columns: minmax(360px, 420px) 1fr;
     align-items: start;
   }
 }
@@ -470,11 +483,32 @@ input:focus:not(:focus-visible) {
   letter-spacing: 0.05em;
 }
 
+/* ── hero-main: row on all sizes that fit, column-reverse on tiny phones ── */
 .hero-main {
   display: flex;
+  /* row — icon beside temperature text */
+  flex-direction: row;
   justify-content: space-between;
   align-items: flex-start;
   gap: 12px;
+}
+
+/* On phones < 380px stack icon on top, text below (column-reverse so
+   the big icon catches the eye first but temp stays readable beneath) */
+@media (max-width: 379px) {
+  .hero-main {
+    flex-direction: column-reverse;
+    align-items: center;
+    text-align: center;
+  }
+
+  .hero-left {
+    width: 100%;
+  }
+
+  .datetime {
+    justify-content: center;
+  }
 }
 
 .hero-left {
@@ -490,22 +524,28 @@ input:focus:not(:focus-visible) {
   gap: 8px;
 }
 
+/* ── Temperature — fluid scaling with clamp() ───────────────────────────────
+   Min: 3.5rem  on a 320px phone
+   Fluid: 15vw  scales with viewport (≈ 48px on 320px, ≈ 105px on 700px)
+   Max: 6.5rem  caps on large screens when used inside the 420px sidebar
+*/
 .temp-hero {
-  font-size: clamp(4.5rem, 18vw, 7rem);
+  font-size: clamp(3.5rem, 15vw, 6.5rem);
   font-weight: 800;
   line-height: 0.88;
   letter-spacing: -0.06em;
   margin: 8px 0 6px;
 }
 
+/* condition label: never smaller than 1rem, fluid, capped at 1.4rem */
 .condition-text {
-  font-size: clamp(1.1rem, 4vw, 1.4rem);
+  font-size: clamp(1rem, 3.5vw, 1.4rem);
   font-weight: 700;
   letter-spacing: -0.02em;
 }
 
 .feels-like {
-  font-size: 0.85rem;
+  font-size: clamp(0.78rem, 2vw, 0.9rem);
   opacity: 0.65;
   margin-top: 4px;
 }
@@ -562,15 +602,28 @@ input:focus:not(:focus-visible) {
   opacity: 0.7;
 }
 
-/* ── HOURLY RAIL ───────────────────────────────────────────────────────────── */
+/* ── HOURLY RAIL — Horizontal Scrollable Container ──────────────────────────
+   On mobile: cards stay fixed-width and scroll horizontally.
+   Cards never shrink, so they remain readable and tappable at every size.
+   overflow-x: auto   → activates the horizontal scrollbar (hidden visually)
+   scroll-snap-type   → snaps card-by-card on swipe (iOS/Android feel)
+   -webkit-overflow-scrolling: touch → momentum scrolling on older iOS
+*/
 .hourly-rail {
   display: flex;
   gap: 10px;
+  /* The key rule: horizontal scroll instead of wrapping/shrinking */
   overflow-x: auto;
-  padding-bottom: 6px;
+  /* Prevent vertical bleed */
+  overflow-y: visible;
+  padding-bottom: 8px;
+  /* Hide the native scrollbar — the swipe gesture is the affordance */
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
+  /* Snap to each card on swipe for tactile precision */
   scroll-snap-type: x mandatory;
+  /* Prevent layout from collapsing the rail height */
+  min-height: 0;
 }
 
 .hourly-rail::-webkit-scrollbar {
@@ -578,7 +631,16 @@ input:focus:not(:focus-visible) {
 }
 
 .hour-card {
-  flex: 0 0 80px;
+  /*
+    flex: 0 0 <width> → do NOT grow, do NOT shrink, stay exactly <width>.
+    76px is the minimum comfortable tap target width.
+    This guarantees cards are readable and tappable regardless of rail width.
+  */
+  flex: 0 0 76px;
+  min-width: 76px;
+  /* belt-and-suspenders for older browsers */
+  min-height: 110px;
+  /* ensures card is tall enough to tap comfortably */
   background: var(--bg-glass-1);
   border: 1px solid var(--glass-stroke);
   border-radius: var(--r-md);
@@ -587,36 +649,47 @@ input:focus:not(:focus-visible) {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  justify-content: space-between;
+  gap: 6px;
   scroll-snap-align: start;
-  transition: background 0.2s;
+  transition: background 0.2s, transform 0.15s;
+  /* No shrinking ever */
+  word-break: keep-all;
 }
 
 .hour-card:hover {
   background: var(--bg-glass-2);
+  transform: translateY(-2px);
 }
 
 .hour-time {
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 700;
   color: var(--text-secondary);
+  white-space: nowrap;
 }
 
 .hour-temp {
   font-size: 1rem;
   font-weight: 800;
+  line-height: 1;
 }
 
 .hour-rain {
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   font-weight: 700;
   color: var(--text-accent);
   display: flex;
   align-items: center;
   gap: 2px;
+  white-space: nowrap;
 }
 
-/* ── TABS ──────────────────────────────────────────────────────────────────── */
+/* ── TABS — 44px Touch Targets + Overflow Scroll Fallback ───────────────────
+   Each tab button meets the WCAG / Apple HIG / Android minimum of 44×44px.
+   On very narrow screens (< 300px) tabs overflow-x scroll rather than
+   squishing below readable size.
+*/
 .tabs {
   display: flex;
   gap: 4px;
@@ -624,18 +697,39 @@ input:focus:not(:focus-visible) {
   background: var(--bg-glass-1);
   border: 1px solid var(--glass-stroke);
   border-radius: var(--r-lg);
+  /* Allow tabs to scroll horizontally on tiny screens instead of wrapping
+     or shrinking below the 44px touch-target minimum */
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  /* Prevent the pill shape from collapsing */
+  flex-shrink: 0;
+}
+
+.tabs::-webkit-scrollbar {
+  display: none;
 }
 
 .tab-btn {
   flex: 1;
-  padding: 9px 4px;
+  /* Minimum width so text never disappears */
+  min-width: 68px;
+  /* Minimum HEIGHT of 44px — the WCAG touch-target requirement */
+  min-height: 44px;
+  padding: 10px 8px;
   border-radius: var(--r-md);
-  font-size: 0.8rem;
+  font-size: clamp(0.72rem, 2.8vw, 0.85rem);
   font-weight: 700;
   color: var(--text-secondary);
   transition: var(--transition);
+  /* Keep label on one line — no line breaks inside a tab */
   white-space: nowrap;
-  min-width: 0;
+  /* Tappable even if the flex container clips */
+  flex-shrink: 0;
+  /* Centre label horizontally and vertically */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .tab-btn:hover:not(.active) {
@@ -649,31 +743,45 @@ input:focus:not(:focus-visible) {
   box-shadow: 0 2px 12px rgba(56, 189, 248, 0.35);
 }
 
-/* ── DETAIL TILES ──────────────────────────────────────────────────────────── */
+/* ── DETAIL TILES — Mobile-First Grid ───────────────────────────────────────
+   Breakpoint logic (as requested):
+     xs  < 480px  → 1 column  (one card per row — no squishing on tiny phones)
+     sm  ≥ 480px  → 2 columns (tablet portrait / large phone landscape)
+     md  ≥ 768px  → 3 columns (small tablet / large phone in landscape)
+     lg  ≥ 1024px (inside right-col sidebar) → back to 2 col (narrower space)
+     xl  ≥ 1280px → 4 columns (wide desktop with right-col having full room)
+
+   We use auto-fill + minmax as a secondary guard so cards never overflow.
+*/
 .detail-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  /* Mobile default: 1 column — full-width cards on small phones */
+  grid-template-columns: 1fr;
   gap: clamp(10px, 2vw, 16px);
 }
 
-@media (min-width: 540px) {
-  .detail-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-@media (min-width: 900px) {
-  .detail-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-@media (min-width: 1100px) {
+/* ≥ 480px: 2 columns — tablets + large phones */
+@media (min-width: 480px) {
   .detail-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
+/* ≥ 768px: 3 columns — tablet landscape / small desktop */
+@media (min-width: 768px) {
+  .detail-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ≥ 1024px: inside the right-col sidebar (narrower), drop back to 2 col */
+@media (min-width: 1024px) {
+  .detail-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ≥ 1280px: enough horizontal space for 4 columns in the sidebar */
 @media (min-width: 1280px) {
   .detail-grid {
     grid-template-columns: repeat(4, 1fr);
@@ -1135,38 +1243,83 @@ input:focus:not(:focus-visible) {
 }
 
 /* ── MOBILE OVERRIDES ──────────────────────────────────────────────────────── */
-@media (max-width: 400px) {
+
+/* xs phones < 480px */
+@media (max-width: 479px) {
+
+  /* hero-stats: drop to 2×2 grid so values stay legible */
   .hero-stats {
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
   }
 
-  .tab-btn {
-    font-size: 0.72rem;
-    padding: 8px 2px;
-  }
-
+  /* forecast: hide the descriptive condition text, keep icon + temps */
   .forecast-row {
     grid-template-columns: 1fr auto auto;
+    gap: 8px;
+    padding: 12px 12px;
   }
 
   .forecast-condition {
     display: none;
   }
 
+  /* UV chart: tighten columns on narrow screens */
   .uv-row {
-    grid-template-columns: 44px 1fr 30px 50px;
+    grid-template-columns: 42px 1fr 28px 46px;
     gap: 6px;
+  }
+
+  /* chart panels: reduce left-right padding */
+  .chart-panel {
+    padding: 16px;
+  }
+
+  /* panels overall: reduce padding */
+  .panel {
+    padding: clamp(16px, 4vw, 24px);
   }
 }
 
+/* Very small phones: 360px and below */
 @media (max-width: 360px) {
+
+  /* Hide wordmark so ATMOS logo icon + actions still fit */
   .logo span {
     display: none;
   }
 
+  /* temp-hero is already clamp'd, but add a hard floor for 320px phones */
   .temp-hero {
-    font-size: 4rem;
+    font-size: 3.2rem;
+  }
+
+  /* Tighter header */
+  .nav-header {
+    padding: 0;
+  }
+}
+
+/* Landscape phones (short + wide): reduce vertical padding */
+@media (max-height: 500px) and (orientation: landscape) {
+  .hero {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .temp-hero {
+    font-size: clamp(2.5rem, 10vw, 4rem);
+    margin: 4px 0;
+  }
+
+  .hero-stats {
+    display: none;
+    /* save vertical space */
+  }
+
+  .datetime {
+    display: none;
+    /* save vertical space */
   }
 }
 
