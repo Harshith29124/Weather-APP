@@ -1,23 +1,74 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 
 <head>
   <meta charset="utf-8" />
-  <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#060b18" />
-  <meta name="description"
-    content="Atmos — A production-grade 2026 weather app with real-time forecasts, marine data, historical analysis, and beautiful aurora UI." />
-  <meta property="og:title" content="Atmos Weather" />
-  <meta property="og:description" content="Real-time weather, 7-day forecasts, marine data & historical analysis." />
-  <meta property="og:type" content="website" />
-  <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+  <!-- Primary Meta -->
   <title>Atmos — Weather 2026</title>
+  <meta name="description"
+    content="Atmos — A production-grade 2026 weather app. Real-time forecasts, 7-day outlook, UV index, sunrise/sunset, hourly charts and a stunning aurora UI." />
+  <meta name="keywords" content="weather, forecast, atmos, 7-day, UV index, real-time, hourly, wind, humidity" />
+  <meta name="author" content="Atmos Weather" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Theme & PWA -->
+  <meta name="theme-color" content="#030918" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#eef2f8" media="(prefers-color-scheme: light)" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Atmos" />
+  <meta name="application-name" content="Atmos" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Atmos — Real-Time Weather 2026" />
+  <meta property="og:description"
+    content="Stunning weather intelligence with live forecasts, aurora UI, UV index, and 7-day outlook." />
+  <meta property="og:site_name" content="Atmos Weather" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Atmos — Weather 2026" />
+  <meta name="twitter:description" content="Real-time weather with aurora UI. Built for the future." />
+
+  <!-- Icons -->
+  <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+  <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+
+  <!-- Manifest -->
+  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+
+  <!-- Preconnect for faster font loading -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <!-- Preconnect to weather APIs -->
+  <link rel="preconnect" href="https://api.open-meteo.com" />
+  <link rel="preconnect" href="https://geocoding-api.open-meteo.com" />
 </head>
 
 <body>
-  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <noscript>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+        background: #030918;
+        color: #f1f5f9;
+        text-align: center;
+        padding: 24px;
+      }
+    </style>
+    <p>Atmos requires JavaScript to run. Please enable JavaScript in your browser settings.</p>
+  </noscript>
   <div id="root"></div>
 </body>
 

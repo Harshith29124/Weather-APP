@@ -1,7 +1,7 @@
 {
-  "short_name": "WeatherPro X",
-  "name": "WeatherPro X - Modern Weather App",
-  "description": "Beautiful weather app with iOS liquid glass design featuring current conditions, forecasts, and marine data",
+  "short_name": "Atmos",
+  "name": "Atmos — Weather 2026",
+  "description": "Production-grade weather app with real-time forecasts, 7-day outlook, UV index, and stunning aurora UI.",
   "icons": [
     {
       "src": "favicon.ico",
@@ -23,9 +23,17 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#667eea",
-  "background_color": "#667eea",
-  "orientation": "portrait-primary",
-  "categories": ["weather", "utilities"],
+  "display_override": [
+    "window-controls-overlay",
+    "standalone"
+  ],
+  "theme_color": "#030918",
+  "background_color": "#030918",
+  "orientation": "any",
+  "categories": [
+    "weather",
+    "utilities"
+  ],
+  "lang": "en",
   "screenshots": []
 }
