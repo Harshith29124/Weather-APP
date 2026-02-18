@@ -173,30 +173,32 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 0 16px;
+  padding: 16px 0;
   gap: 12px;
+  flex-wrap: wrap;
+  /* Allow wrapping on very small screens */
 }
 
 .header-brand {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .brand-icon {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   background: linear-gradient(135deg, var(--accent-blue), var(--accent-indigo));
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 16px rgba(79, 195, 247, 0.3);
+  box-shadow: 0 4px 12px rgba(79, 195, 247, 0.25);
 }
 
 .brand-name {
   font-family: var(--font-display);
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 700;
   color: var(--text-primary);
   letter-spacing: -0.02em;
@@ -205,12 +207,14 @@
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  order: 2;
+  /* Put geolocate/theme at the end */
 }
 
 .header-btn {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: var(--radius-md);
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
@@ -227,7 +231,6 @@
   background: var(--glass-hover);
   color: var(--text-primary);
   transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
 }
 
 .header-btn.active {
@@ -238,8 +241,25 @@
 
 .search-bar {
   flex: 1;
-  max-width: 400px;
+  min-width: 200px;
+  /* Ensure search doesn't get too small */
+  max-width: 100%;
   position: relative;
+  order: 3;
+  /* Push search to next line on mobile if needed */
+}
+
+@media (min-width: 600px) {
+  .search-bar {
+    order: 0;
+    max-width: 300px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .search-bar {
+    max-width: 400px;
+  }
 }
 
 .search-bar-input {
@@ -587,7 +607,14 @@
   flex-direction: column;
   gap: 3px;
   flex: 1;
-  padding: 0 12px;
+  padding: 0 8px;
+  /* Slightly tighter for mobile */
+}
+
+@media (min-width: 480px) {
+  .hero-stat {
+    padding: 0 12px;
+  }
 }
 
 .hero-stat:first-child {
@@ -599,24 +626,43 @@
 }
 
 .hero-stat-label {
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   color: rgba(255, 255, 255, 0.45);
   text-transform: uppercase;
   letter-spacing: 0.1em;
   font-weight: 600;
 }
 
+@media (min-width: 480px) {
+  .hero-stat-label {
+    font-size: 0.65rem;
+  }
+}
+
 .hero-stat-value {
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   font-weight: 600;
   color: #ffffff;
 }
 
+@media (min-width: 480px) {
+  .hero-stat-value {
+    font-size: 0.95rem;
+  }
+}
+
 .hero-stat-divider {
   width: 1px;
-  height: 32px;
+  height: 24px;
+  /* Shorter for mobile */
   background: rgba(255, 255, 255, 0.12);
   flex-shrink: 0;
+}
+
+@media (min-width: 480px) {
+  .hero-stat-divider {
+    height: 32px;
+  }
 }
 
 /* ── TABS ─────────────────────────────────────────────────── */
@@ -637,13 +683,22 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 8px 12px;
+  padding: 10px 8px;
+  /* More vertical padding for tap target */
   border-radius: var(--radius-sm);
-  font-size: 0.8rem;
+  font-size: 0.75rem;
+  /* Slightly smaller for mobile */
   font-weight: 500;
   color: var(--text-muted);
   transition: all var(--transition-base);
   white-space: nowrap;
+}
+
+@media (min-width: 480px) {
+  .tab-btn {
+    font-size: 0.8rem;
+    padding: 8px 12px;
+  }
 }
 
 .tab-btn:hover {
@@ -827,12 +882,19 @@
 .detail-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
+  gap: 8px;
 }
 
-@media (min-width: 600px) {
+@media (max-width: 350px) {
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 768px) {
   .detail-grid {
     grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
   }
 }
 
@@ -1457,18 +1519,27 @@
 }
 
 /* ── RESPONSIVE TWEAKS ────────────────────────────────────── */
-@media (max-width: 480px) {
+@media (max-width: 600px) {
   .header {
-    padding: 14px 0 12px;
+    padding: 12px 0;
+  }
+
+  .header-brand {
+    flex: 1;
+  }
+
+  .brand-name {
+    display: none;
+    /* Keep it minimal */
   }
 
   .hero-card {
-    padding: 24px 20px;
-    min-height: 280px;
+    padding: 28px 20px;
+    min-height: 300px;
   }
 
   .hero-city {
-    font-size: 1.3rem;
+    font-size: 1.4rem;
   }
 
   .hero-temp {
@@ -1484,18 +1555,33 @@
     padding: 16px;
   }
 
-  .detail-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .geo-btn span {
+    display: none;
+    /* Show icon only on small screens */
   }
 
-  .brand-name {
-    display: none;
+  .geo-btn {
+    padding: 10px;
   }
 }
 
-@media (max-width: 360px) {
+@media (max-width: 380px) {
   .hero-temp {
     font-size: 3.8rem;
+  }
+
+  .hero-stat-value {
+    font-size: 0.8rem;
+  }
+
+  .forecast-row {
+    grid-template-columns: 50px 30px 1fr 60px;
+    gap: 8px;
+    padding: 8px 10px;
+  }
+
+  .forecast-day-name {
+    font-size: 0.75rem;
   }
 }
 
