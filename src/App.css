@@ -96,41 +96,41 @@
 }
 
 .aurora-orb:nth-child(1) {
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, #4fc3f7, transparent 70%);
-  top: -200px;
-  left: -100px;
-  animation-duration: 18s;
+  width: 1000px;
+  height: 1000px;
+  background: radial-gradient(circle, var(--accent-blue), transparent 65%);
+  top: -300px;
+  left: -200px;
+  animation-duration: 25s;
 }
 
 .aurora-orb:nth-child(2) {
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(circle, #818cf8, transparent 70%);
-  top: 20%;
-  right: -150px;
-  animation-duration: 22s;
+  width: 900px;
+  height: 900px;
+  background: radial-gradient(circle, var(--accent-indigo), transparent 65%);
+  top: 15%;
+  right: -250px;
+  animation-duration: 30s;
   animation-delay: -5s;
 }
 
 .aurora-orb:nth-child(3) {
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle, #2dd4bf, transparent 70%);
-  bottom: -100px;
-  left: 30%;
-  animation-duration: 25s;
+  width: 900px;
+  height: 900px;
+  background: radial-gradient(circle, var(--accent-teal), transparent 65%);
+  bottom: -200px;
+  left: 10%;
+  animation-duration: 35s;
   animation-delay: -10s;
 }
 
 .aurora-orb:nth-child(4) {
-  width: 350px;
-  height: 350px;
-  background: radial-gradient(circle, #c084fc, transparent 70%);
-  bottom: 20%;
-  right: 10%;
-  animation-duration: 20s;
+  width: 800px;
+  height: 800px;
+  background: radial-gradient(circle, var(--accent-purple), transparent 65%);
+  bottom: 10%;
+  right: 5%;
+  animation-duration: 28s;
   animation-delay: -8s;
 }
 
@@ -605,43 +605,53 @@
 .hero-stat {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 2px;
   flex: 1;
-  padding: 0 8px;
-  /* Slightly tighter for mobile */
+  padding: 0 4px;
+  /* Minimal padding for mobile */
+  min-width: 0;
+  /* Important for flex-shrink on small screens */
+  align-items: center;
+  /* Center horizontally for better balance */
 }
 
 @media (min-width: 480px) {
   .hero-stat {
-    padding: 0 12px;
+    padding: 0 8px;
+    align-items: flex-start;
+    /* Revert to left-aligned on larger screens */
   }
 }
 
 .hero-stat:first-child {
   padding-left: 0;
+  align-items: flex-start;
 }
 
 .hero-stat:last-child {
   padding-right: 0;
+  align-items: flex-end;
 }
 
 .hero-stat-label {
-  font-size: 0.6rem;
+  font-size: 0.55rem;
   color: rgba(255, 255, 255, 0.45);
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  font-weight: 600;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+  white-space: nowrap;
 }
 
 @media (min-width: 480px) {
   .hero-stat-label {
     font-size: 0.65rem;
+    letter-spacing: 0.1em;
   }
 }
 
 .hero-stat-value {
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-size: 0.8rem;
+  font-weight: 700;
   color: #ffffff;
 }
 
@@ -653,15 +663,15 @@
 
 .hero-stat-divider {
   width: 1px;
-  height: 24px;
-  /* Shorter for mobile */
-  background: rgba(255, 255, 255, 0.12);
+  height: 20px;
+  background: rgba(255, 255, 255, 0.1);
   flex-shrink: 0;
 }
 
 @media (min-width: 480px) {
   .hero-stat-divider {
     height: 32px;
+    background: rgba(255, 255, 255, 0.12);
   }
 }
 
@@ -1471,6 +1481,23 @@
   gap: 16px;
 }
 
+.footer {
+  margin-top: auto;
+  padding: 40px 0 24px;
+  text-align: center;
+  border-top: 1px solid var(--glass-border);
+  position: relative;
+  z-index: 1;
+}
+
+.footer-text {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
 /* ── CONTENT PADDING ──────────────────────────────────────── */
 .card-body {
   padding: 20px;
@@ -1522,66 +1549,76 @@
 @media (max-width: 600px) {
   .header {
     padding: 12px 0;
+    gap: 8px;
+    /* Tighter gap for small screens */
   }
 
   .header-brand {
-    flex: 1;
+    flex: 0 0 auto;
   }
 
   .brand-name {
     display: none;
-    /* Keep it minimal */
   }
 
   .hero-card {
-    padding: 28px 20px;
-    min-height: 300px;
+    padding: 24px 16px;
+    min-height: 280px;
   }
 
   .hero-city {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
   }
 
   .hero-temp {
-    font-size: 4.5rem;
+    font-size: 4rem;
   }
 
   .hero-icon-wrap {
-    width: 80px;
-    height: 80px;
+    width: 70px;
+    height: 70px;
   }
 
   .card-body {
-    padding: 16px;
+    padding: 14px;
   }
 
   .geo-btn span {
     display: none;
-    /* Show icon only on small screens */
   }
 
   .geo-btn {
-    padding: 10px;
+    padding: 8px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 
 @media (max-width: 380px) {
   .hero-temp {
-    font-size: 3.8rem;
+    font-size: 3.5rem;
   }
 
   .hero-stat-value {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
   }
 
   .forecast-row {
-    grid-template-columns: 50px 30px 1fr 60px;
-    gap: 8px;
-    padding: 8px 10px;
+    grid-template-columns: 50px 24px 1fr 60px;
+    gap: 6px;
+    padding: 6px 8px;
   }
 
   .forecast-day-name {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
+  }
+
+  .hero-bottom {
+    padding-top: 16px;
+    margin-top: 20px;
   }
 }
 

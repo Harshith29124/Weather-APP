@@ -349,6 +349,8 @@ export default function App() {
               heroBg={heroBg(current.weather_code, isDay)}
             />
 
+            <SunCard data={weatherData} />
+
             {/* TABS */}
             <div className="tabs-container">
               {[
@@ -379,7 +381,6 @@ export default function App() {
                   initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -16 }} transition={{ duration: 0.25 }}>
                   <CurrentDetails data={weatherData} />
-                  <SunCard data={weatherData} />
                   <ForecastCard data={weatherData} />
                 </motion.div>
               )}
