@@ -1,14 +1,12 @@
-import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Search, Wind, Eye, MapPin, Sun, Moon, Cloud,
+  Search, Eye, MapPin, Sun, Moon, Cloud,
   CloudRain, CloudSnow, CloudLightning, Gauge, Activity,
-  Umbrella, Thermometer, Calendar, Waves,
-  Navigation, Droplets, Zap, Locate,
-  SunMedium, Sunset, Sunrise, X, ChevronRight
+  Droplets, Zap, SunMedium, Sunset, Sunrise
 } from 'lucide-react';
 import axios from 'axios';
-import { format, subDays, parseISO } from 'date-fns';
+import { format } from 'date-fns';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import './App.css';
 
