@@ -6,6 +6,7 @@ function App() {
   const [mode, setMode] = useState("current");
   const [date, setDate] = useState("");
   const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const getCoordinates = async (city) => {
     const res = await fetch(
@@ -20,13 +21,18 @@ function App() {
   };
 
   const fetchWeather = async () => {
+    setLoading(true);
     const coords = await getCoordinates(location);
-    if (!coords) return alert("Location not found");
+    if (!coords) {
+      alert("Location not found");
+      setLoading(false);
+      return;
+    }
 
     let url = "";
 
     if (mode === "current") {
-      url = `https://api.open-meteo.com/v1/forecast?latitude=${coords.lat}&longitude=${coords.lon}&current_weather=true`;
+      url = `https://api.open-meteo.com/v1/forecast?latitude=${coords.lat}&longitude=${coords.lon}&current_weather=true&hourly=relativehumidity_2m`;
     }
 
     if (mode === "historical" && date) {
@@ -40,55 +46,93 @@ function App() {
     const res = await fetch(url);
     const json = await res.json();
     setData(json);
+    setLoading(false);
   };
 
   return (
     <div className="app">
-      <div className="card">
-        <h2>Weather App</h2>
+      <div className="dashboard">
+        <h1>Weather Dashboard</h1>
 
-        <input
-          type="text"
-          placeholder="Enter location"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-        />
-
-        <select value={mode} onChange={(e) => setMode(e.target.value)}>
-          <option value="current">Current Weather</option>
-          <option value="historical">Historical Weather</option>
-          <option value="marine">Marine Weather</option>
-        </select>
-
-        {mode === "historical" && (
+        <div className="controls">
           <input
-            type="date"
-            onChange={(e) => setDate(e.target.value)}
+            type="text"
+            placeholder="Enter location"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
           />
-        )}
 
-        <button onClick={fetchWeather}>Fetch</button>
+          <select value={mode} onChange={(e) => setMode(e.target.value)}>
+            <option value="current">Current</option>
+            <option value="historical">Historical</option>
+            <option value="marine">Marine</option>
+          </select>
 
-        <div className="result">
+          {mode === "historical" && (
+            <input type="date" onChange={(e) => setDate(e.target.value)} />
+          )}
+
+          <button onClick={fetchWeather}>
+            {loading ? "Loading..." : "Search"}
+          </button>
+        </div>
+
+        <div className="cards">
           {data && mode === "current" && (
-            <div>
-              <p>Temperature: {data.current_weather?.temperature}°C</p>
-              <p>Wind: {data.current_weather?.windspeed} km/h</p>
-            </div>
+            <>
+              <div className="card">
+                <h3>Temperature</h3>
+                <p className="big">{data.current_weather?.temperature}°C</p>
+              </div>
+
+              <div className="card">
+                <h3>Wind Speed</h3>
+                <p className="big">{data.current_weather?.windspeed} km/h</p>
+              </div>
+
+              <div className="card">
+                <h3>Humidity</h3>
+                <p className="big">
+                  {data.hourly?.relativehumidity_2m[0]}%
+                </p>
+              </div>
+            </>
           )}
 
           {data && mode === "historical" && (
-            <div>
-              <p>Max Temp: {data.daily?.temperature_2m_max[0]}°C</p>
-              <p>Min Temp: {data.daily?.temperature_2m_min[0]}°C</p>
-            </div>
+            <>
+              <div className="card">
+                <h3>Max Temp</h3>
+                <p className="big">
+                  {data.daily?.temperature_2m_max[0]}°C
+                </p>
+              </div>
+
+              <div className="card">
+                <h3>Min Temp</h3>
+                <p className="big">
+                  {data.daily?.temperature_2m_min[0]}°C
+                </p>
+              </div>
+            </>
           )}
 
           {data && mode === "marine" && (
-            <div>
-              <p>Wave Height: {data.hourly?.wave_height[0]} m</p>
-              <p>Sea Temp: {data.hourly?.sea_surface_temperature[0]}°C</p>
-            </div>
+            <>
+              <div className="card">
+                <h3>Wave Height</h3>
+                <p className="big">
+                  {data.hourly?.wave_height[0]} m
+                </p>
+              </div>
+
+              <div className="card">
+                <h3>Sea Temperature</h3>
+                <p className="big">
+                  {data.hourly?.sea_surface_temperature[0]}°C
+                </p>
+              </div>
+            </>
           )}
         </div>
       </div>

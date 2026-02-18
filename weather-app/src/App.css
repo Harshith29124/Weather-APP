@@ -1,42 +1,75 @@
 body {
   margin: 0;
-  font-family: Arial;
-  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  font-family: Arial, sans-serif;
+  background: linear-gradient(120deg, #141e30, #243b55);
+  color: white;
 }
 
 .app {
+  min-height: 100vh;
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: 100vh;
+  padding: 40px 20px;
 }
 
-.card {
-  backdrop-filter: blur(15px);
-  background: rgba(255, 255, 255, 0.15);
-  padding: 30px;
-  border-radius: 20px;
-  width: 350px;
-  color: white;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+.dashboard {
+  width: 100%;
+  max-width: 900px;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.controls {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+  justify-content: center;
 }
 
 input, select, button {
-  padding: 10px;
-  border-radius: 8px;
+  padding: 12px;
+  border-radius: 12px;
   border: none;
+  font-size: 14px;
+}
+
+input, select {
+  background: rgba(255,255,255,0.15);
+  color: white;
+  backdrop-filter: blur(10px);
 }
 
 button {
-  cursor: pointer;
-  background: white;
-  color: black;
+  background: #ffffff;
+  color: #000;
   font-weight: bold;
+  cursor: pointer;
 }
 
-.result {
-  margin-top: 15px;
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  backdrop-filter: blur(20px);
+  background: rgba(255,255,255,0.12);
+  border-radius: 20px;
+  padding: 25px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+  transition: 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.big {
+  font-size: 28px;
+  margin-top: 10px;
 }
