@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Search, Eye, MapPin, Sun, Moon, Cloud,
   CloudRain, CloudSnow, CloudLightning, Gauge, Activity,
-  Droplets, Zap, SunMedium, Sunset, Sunrise, Waves
+  Droplets, Zap, SunMedium, Sunset, Sunrise
 } from 'lucide-react';
 import axios from 'axios';
 import { format } from 'date-fns';
