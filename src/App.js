@@ -13,22 +13,22 @@ import './App.css';
 const GEO_URL = 'https://geocoding-api.open-meteo.com/v1/search';
 const WX_URL = 'https://api.open-meteo.com/v1/forecast';
 
-const WX_THEMES = {
-  0: { desc: 'Clear Skies', color: '#fbbf24', icon: Sun },
-  1: { desc: 'Mainly Clear', color: '#fbbf24', icon: SunMedium },
-  2: { desc: 'Partly Cloudy', color: '#94a3b8', icon: Cloud },
-  3: { desc: 'Overcast', color: '#64748b', icon: Cloud },
-  45: { desc: 'Foggy', color: '#94a3b8', icon: Activity },
-  51: { desc: 'Light Drizzle', color: '#38bdf8', icon: CloudRain },
-  61: { desc: 'Rainy', color: '#0ea5e9', icon: CloudRain },
-  71: { desc: 'Snowy', color: '#e2e8f0', icon: CloudSnow },
-  95: { desc: 'Thunderstorm', color: '#fbbf24', icon: CloudLightning },
+const WX_MAP = {
+  0: { t: 'Clear Skies', c: '#fbbf24', i: Sun },
+  1: { t: 'Mainly Clear', c: '#fbbf24', i: SunMedium },
+  2: { t: 'Partly Cloudy', c: '#94a3b8', i: Cloud },
+  3: { t: 'Overcast', c: '#64748b', i: Cloud },
+  45: { t: 'Foggy', c: '#94a3b8', i: Activity },
+  51: { t: 'Drizzle', c: '#38bdf8', i: CloudRain },
+  61: { t: 'Rainy', c: '#0ea5e9', i: CloudRain },
+  71: { t: 'Snowy', c: '#e2e8f0', i: CloudSnow },
+  95: { t: 'Thunderstorm', c: '#fbbf24', i: CloudLightning },
 };
 
 const WxIcon = ({ code, isDay, size = 24 }) => {
-  const meta = WX_THEMES[code] || WX_THEMES[2];
-  const Icon = meta.icon;
-  const color = !isDay && (code <= 1) ? '#818cf8' : meta.color;
+  const cfg = WX_MAP[code] || WX_MAP[2];
+  const Icon = cfg.i;
+  const color = !isDay && (code <= 1) ? '#818cf8' : cfg.c;
   const FinalIcon = !isDay && (code <= 1) ? Moon : Icon;
   return <FinalIcon size={size} color={color} strokeWidth={1.5} />;
 };
@@ -36,100 +36,103 @@ const WxIcon = ({ code, isDay, size = 24 }) => {
 export default function App() {
   const [theme, setTheme] = useState('dark');
   const [loc, setLoc] = useState({ name: 'New Delhi', lat: 28.61, lon: 77.21, country: 'India' });
-  const [weather, setWeather] = useState(null);
+  const [wx, setWx] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
-  const [results, setResults] = useState([]);
-  const [showSearch, setShowSearch] = useState(false);
+  const [query, setQuery] = useState('');
+  const [hits, setHits] = useState([]);
+  const [open, setOpen] = useState(false);
   const [view, setView] = useState('current');
-  const [time, setTime] = useState(new Date());
+  const [now, setNow] = useState(new Date());
 
   useEffect(() => {
-    const id = setInterval(() => setTime(new Date()), 1000);
-    return () => clearInterval(id);
+    const tic = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(tic);
   }, []);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
 
-  const fetchWeather = useCallback(async (lat, lon) => {
+  const fetchWx = useCallback(async (lat, lon) => {
     setLoading(true);
     try {
       const { data } = await axios.get(WX_URL, {
         params: {
           latitude: lat, longitude: lon,
-          current: 'temperature_2m,relative_humidity_2m,apparent_temperature,is_day,weather_code,wind_speed_10m,wind_direction_10m,pressure_msl,visibility,uv_index',
+          current: 'temperature_2m,relative_humidity_2m,apparent_temperature,is_day,weather_code,wind_speed_10m,pressure_msl,visibility,uv_index',
           hourly: 'temperature_2m,weather_code,is_day,precipitation_probability',
-          daily: 'temperature_2m_max,temperature_2m_min,weather_code,sunrise,sunset,uv_index_max',
+          daily: 'temperature_2m_max,temperature_2m_min,weather_code,sunrise,sunset',
           timezone: 'auto'
         }
       });
-      setWeather(data);
+      setWx(data);
     } catch (e) {
-      console.error("API Error", e);
+      console.error(e);
     } finally {
       setTimeout(() => setLoading(false), 800);
     }
   }, []);
 
-  useEffect(() => { fetchWeather(loc.lat, loc.lon); }, [loc, fetchWeather]);
+  useEffect(() => { fetchWx(loc.lat, loc.lon); }, [loc, fetchWx]);
 
-  const handleSearch = async (val) => {
-    setSearch(val);
-    if (val.length < 2) { setResults([]); return; }
+  const onSearch = async (v) => {
+    setQuery(v);
+    if (v.length < 2) { setHits([]); return; }
     try {
-      const { data } = await axios.get(GEO_URL, { params: { name: val, count: 5 } });
-      setResults(data.results || []);
-    } catch { setResults([]); }
+      const { data } = await axios.get(GEO_URL, { params: { name: v, count: 5 } });
+      setHits(data.results || []);
+    } catch { setHits([]); }
   };
 
-  const getHeroGradient = useMemo(() => {
-    if (!weather) return '';
-    const code = weather.current.weather_code;
-    const isDay = weather.current.is_day;
-    if (!isDay) return 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)';
-    if (code <= 1) return 'linear-gradient(135deg, #0369a1 0%, #075985 100%)';
-    if (code <= 3) return 'linear-gradient(135deg, #334155 0%, #1e293b 100%)';
-    return 'linear-gradient(135deg, #1e3a8a 0%, #1e293b 100%)';
-  }, [weather]);
+  const bgStyle = useMemo(() => {
+    if (!wx) return '';
+    const { weather_code: c, is_day: d } = wx.current;
+    if (!d) return 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)';
+    if (c <= 1) return 'linear-gradient(135deg, #0EA5E9 0%, #0369A1 100%)';
+    return 'linear-gradient(135deg, #334155 0%, #1e293b 100%)';
+  }, [wx]);
 
-  if (loading && !weather) return (
-    <div className="loader-screen">
-      <SunMedium className="animate-pulse" size={48} color="#fff" />
-      <div className="loading-bar"><div className="loading-bar-fill" /></div>
+  if (loading && !wx) return (
+    <div className="app" style={{ justifyContent: 'center', alignItems: 'center' }}>
+      <Activity className="animate-spin" size={48} color="#0EA5E9" />
     </div>
   );
 
   return (
-    <div className="app-shell">
-      <div className="aurora-mesh">
-        <div className="mesh-orb" style={{ background: 'hsla(210, 100%, 50%, 0.3)', top: '-10%', left: '-10%' }} />
-        <div className="mesh-orb" style={{ background: 'hsla(260, 100%, 60%, 0.2)', bottom: '10%', right: '-5%' }} />
-        <div className="mesh-orb" style={{ background: 'hsla(180, 100%, 40%, 0.1)', top: '40%', right: '20%' }} />
+    <div className="app">
+      <div className="aurora">
+        <div className="orb" style={{ width: 800, height: 800, background: 'var(--text-accent)', top: '-10%', left: '-10%' }} />
+        <div className="orb" style={{ width: 600, height: 600, background: '#818cf8', bottom: '10%', right: '-5%' }} />
       </div>
 
-      <main className="main-wrapper">
-        {/* HEADER */}
-        <header className="header-bar">
-          <div className="brand-logo"><SunMedium size={32} strokeWidth={2.5} /> ATMOS</div>
+      <main className="main-content">
+        <section>
+          <header className="nav-header">
+            <div className="logo"><SunMedium size={32} strokeWidth={2.5} /> ATMOS</div>
+            <button className="btn-round" onClick={() => setTheme(t => t === 'dark' ? 'light' : 'dark')}>
+              {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+            </button>
+          </header>
 
-          <div className="search-container">
-            <Search className="search-field-icon" size={20} />
+          <div className="search-box">
+            <Search className="input-icon" size={20} style={{ position: 'absolute', left: 18, top: 16, opacity: 0.5 }} />
             <input
-              className="search-field"
-              placeholder="Search major cities..."
-              value={search}
-              onChange={e => handleSearch(e.target.value)}
-              onFocus={() => setShowSearch(true)}
+              className="search-input"
+              placeholder="Search major city..."
+              value={query}
+              onChange={e => onSearch(e.target.value)}
+              onFocus={() => setOpen(true)}
             />
             <AnimatePresence>
-              {showSearch && results.length > 0 && (
-                <motion.div className="dropdown" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }}>
-                  {results.map((r, i) => (
-                    <div key={i} className="drop-item" onClick={() => { setLoc({ name: r.name, lat: r.latitude, lon: r.longitude, country: r.country }); setShowSearch(false); setSearch(''); }}>
-                      <MapPin size={18} color="#94a3b8" />
-                      <div><p style={{ fontWeight: 700 }}>{r.name}</p><p style={{ fontSize: 12, opacity: 0.6 }}>{r.country} • {r.admin1}</p></div>
+              {open && hits.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+                  style={{ position: 'absolute', top: 60, left: 0, right: 0, background: 'var(--bg-deep)', borderRadius: 20, border: '1px solid var(--glass-stroke)', zIndex: 100, overflow: 'hidden' }}
+                >
+                  {hits.map((h, i) => (
+                    <div key={i} onClick={() => { setLoc({ name: h.name, lat: h.latitude, lon: h.longitude, country: h.country }); setOpen(false); setQuery(''); }} style={{ padding: '14px 20px', cursor: 'pointer', borderBottom: '1px solid var(--glass-stroke)', display: 'flex', alignItems: 'center', gap: 10 }}>
+                      <MapPin size={16} opacity={0.5} />
+                      <div><p style={{ fontWeight: 700 }}>{h.name}</p><p style={{ fontSize: 12, opacity: 0.5 }}>{h.country}</p></div>
                     </div>
                   ))}
                 </motion.div>
@@ -137,128 +140,112 @@ export default function App() {
             </AnimatePresence>
           </div>
 
-          <div className="action-group" style={{ display: 'flex', gap: 10 }}>
-            <button className="action-btn" onClick={() => setTheme(t => t === 'dark' ? 'light' : 'dark')}>
-              {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
-            </button>
-          </div>
-        </header>
-
-        <section className="dashboard-grid">
-          {/* PRIMARY COLUMN */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-            <motion.div
-              className="glass-panel hero-v2"
-              style={{ background: getHeroGradient }}
-              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-            >
-              <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, opacity: 0.8 }}>
-                  <MapPin size={14} /> <span style={{ fontWeight: 600 }}>{loc.name}, {loc.country}</span>
+          <div style={{ marginTop: 32, display: 'flex', flexDirection: 'column', gap: 20 }}>
+            <motion.div className="panel hero" style={{ background: bgStyle, color: '#fff' }} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+              <div className="hero-main">
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, opacity: 0.8, fontSize: 14, fontWeight: 600 }}><MapPin size={14} />{loc.name}, {loc.country}</div>
+                  <h1 className="temp-hero">{Math.round(wx.current.temperature_2m)}°</h1>
+                  <p style={{ fontSize: '1.5rem', fontWeight: 700 }}>{(WX_MAP[wx.current.weather_code] || WX_MAP[2]).t}</p>
+                  <p style={{ opacity: 0.6, fontSize: 14, marginTop: 4 }}>{format(now, 'EEEE, dd MMMM • HH:mm')}</p>
                 </div>
-                <h1 className="hero-temp-hero">{Math.round(weather.current.temperature_2m)}°</h1>
-                <p style={{ fontSize: '1.5rem', fontWeight: 600, opacity: 0.9 }}>
-                  {(WX_THEMES[weather.current.weather_code] || WX_THEMES[2]).desc}
-                </p>
-                <p style={{ opacity: 0.6, fontSize: 14 }}>{format(time, 'EEEE, dd MMMM • HH:mm:ss')}</p>
+                <div style={{ textAlign: 'right' }}>
+                  <WxIcon code={wx.current.weather_code} isDay={wx.current.is_day} size={100} />
+                  <p style={{ marginTop: 8, fontWeight: 700 }}>Feels like {Math.round(wx.current.apparent_temperature)}°</p>
+                </div>
               </div>
-              <div style={{ textAlign: 'right' }}>
-                <WxIcon code={weather.current.weather_code} isDay={weather.current.is_day} size={120} />
-                <p style={{ marginTop: 12, fontWeight: 700, fontSize: 18 }}>Feels like {Math.round(weather.current.apparent_temperature)}°</p>
+
+              <div className="hero-stats">
+                <div className="h-stat"><p className="h-stat-label">High</p><p className="h-stat-value">{Math.round(wx.daily.temperature_2m_max[0])}°</p></div>
+                <div className="h-stat"><p className="h-stat-label">Low</p><p className="h-stat-value">{Math.round(wx.daily.temperature_2m_min[0])}°</p></div>
+                <div className="h-stat"><p className="h-stat-label">Humidity</p><p className="h-stat-value">{wx.current.relative_humidity_2m}%</p></div>
+                <div className="h-stat"><p className="h-stat-label">Wind</p><p className="h-stat-value">{Math.round(wx.current.wind_speed_10m)} <small>km/h</small></p></div>
               </div>
             </motion.div>
 
-            <div className="stat-grid">
-              <div className="glass-panel stat-tile">
-                <span className="stat-label">Humidity</span>
-                <span className="stat-value">{weather.current.relative_humidity_2m}%</span>
-              </div>
-              <div className="glass-panel stat-tile">
-                <span className="stat-label">UV Index</span>
-                <span className="stat-value">{weather.current.uv_index.toFixed(1)}</span>
-              </div>
-              <div className="glass-panel stat-tile">
-                <span className="stat-label">Wind</span>
-                <span className="stat-value">{Math.round(weather.current.wind_speed_10m)} <small style={{ fontSize: 10 }}>km/h</small></span>
-              </div>
-              <div className="glass-panel stat-tile">
-                <span className="stat-label">Pressure</span>
-                <span className="stat-value">{Math.round(weather.current.pressure_msl)} <small style={{ fontSize: 10 }}>hPa</small></span>
-              </div>
-            </div>
-
-            <div className="glass-panel">
-              <h3 className="stat-label" style={{ marginBottom: 16 }}>Next 24 Hours</h3>
+            <div className="panel">
+              <h3 className="label-sm">Next 24 Hours</h3>
               <div className="hourly-rail">
-                {weather.hourly.time.slice(0, 24).map((t, i) => (
-                  <div key={i} className="hour-node">
-                    <span style={{ fontSize: 12, opacity: 0.6 }}>{format(new Date(t), 'HH:mm')}</span>
-                    <WxIcon code={weather.hourly.weather_code[i]} isDay={weather.hourly.is_day[i]} size={32} />
-                    <span style={{ fontWeight: 800, fontSize: 16 }}>{Math.round(weather.hourly.temperature_2m[i])}°</span>
-                    <span style={{ fontSize: 10, color: 'var(--accent-blue)' }}>{weather.hourly.precipitation_probability[i]}%</span>
+                {wx.hourly.time.slice(0, 24).map((t, i) => (
+                  <div key={i} className="hour-card">
+                    <span style={{ fontSize: 12, opacity: 0.5 }}>{format(new Date(t), 'HH:mm')}</span>
+                    <WxIcon code={wx.hourly.weather_code[i]} isDay={wx.hourly.is_day[i]} size={32} />
+                    <span style={{ fontWeight: 800, fontSize: 18 }}>{Math.round(wx.hourly.temperature_2m[i])}°</span>
+                    <span style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-accent)' }}>{wx.hourly.precipitation_probability[i]}%</span>
                   </div>
                 ))}
               </div>
             </div>
           </div>
-
-          {/* SECONDARY COLUMN */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-            <div className="glass-panel" style={{ height: '100%' }}>
-              <h3 className="stat-label" style={{ marginBottom: 24 }}>7-Day Forecast</h3>
-              <div className="forecast-strip">
-                {weather.daily.time.map((d, i) => (
-                  <motion.div
-                    key={i}
-                    className="forecast-item"
-                    initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.05 }}
-                  >
-                    <span style={{ fontWeight: 700 }}>{i === 0 ? 'Today' : format(new Date(d), 'EEEE')}</span>
-                    <WxIcon code={weather.daily.weather_code[i]} isDay={1} size={24} />
-                    <div style={{ height: 4, background: 'rgba(255,255,255,0.05)', borderRadius: 2, margin: '0 16px', position: 'relative' }}>
-                      <div style={{ position: 'absolute', left: '20%', right: '20%', top: 0, bottom: 0, background: 'var(--accent-base)', borderRadius: 2, opacity: 0.5 }} />
-                    </div>
-                    <div style={{ textAlign: 'right', fontWeight: 800 }}>
-                      {Math.round(weather.daily.temperature_2m_max[i])}°
-                      <span style={{ opacity: 0.4, fontWeight: 400, marginLeft: 8 }}>{Math.round(weather.daily.temperature_2m_min[i])}°</span>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-
-              <div className="chart-container" style={{ marginTop: 40 }}>
-                <h3 className="stat-label" style={{ marginBottom: 16 }}>Temperature Trend</h3>
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={weather.hourly.time.slice(0, 24).map((t, i) => ({ time: format(new Date(t), 'HH'), temp: weather.hourly.temperature_2m[i] }))}>
-                    <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#4fc3f7" stopOpacity={0.3} /><stop offset="95%" stopColor="#4fc3f7" stopOpacity={0} /></linearGradient></defs>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} strokeOpacity={0.1} />
-                    <XAxis dataKey="time" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 10 }} />
-                    <YAxis hide domain={['dataMin - 2', 'dataMax + 2']} />
-                    <Tooltip cursor={{ stroke: 'rgba(255,255,255,0.1)' }} contentStyle={{ background: '#0f172a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12 }} />
-                    <Area type="monotone" dataKey="temp" stroke="#4fc3f7" fillOpacity={1} fill="url(#g)" strokeWidth={3} />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-
-            <div className="stat-grid" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
-              <div className="glass-panel stat-tile">
-                <span className="stat-label" style={{ display: 'flex', alignItems: 'center', gap: 8 }}><Sunrise size={14} /> Sunrise</span>
-                <span className="stat-value" style={{ fontSize: '1.2rem' }}>{format(new Date(weather.daily.sunrise[0]), 'HH:mm')}</span>
-              </div>
-              <div className="glass-panel stat-tile">
-                <span className="stat-label" style={{ display: 'flex', alignItems: 'center', gap: 8 }}><Sunset size={14} /> Sunset</span>
-                <span className="stat-value" style={{ fontSize: '1.2rem' }}>{format(new Date(weather.daily.sunset[0]), 'HH:mm')}</span>
-              </div>
-            </div>
-          </div>
         </section>
 
-        <footer className="app-footer">
-          © 2026 ATMOS WEATHER ENGINE • PROCESSED WITH PRECISION • 24H LIVE DATA
-        </footer>
+        <section>
+          <nav className="tabs">
+            {['Current', 'Hourly', '7-Day', 'Details'].map(t => (
+              <button key={t} className={`tab-btn ${view === t.toLowerCase() ? 'active' : ''}`} onClick={() => setView(t.toLowerCase())}>{t}</button>
+            ))}
+          </nav>
+
+          <AnimatePresence mode="wait">
+            {view === 'current' && (
+              <motion.div key="cur" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.98 }} className="detail-grid">
+                {[
+                  { l: 'Pressure', v: Math.round(wx.current.pressure_msl), u: ' hPa', i: <Gauge size={18} /> },
+                  { l: 'Visibility', v: Math.round(wx.current.visibility / 1000), u: ' km', i: <Eye size={18} /> },
+                  { l: 'Humidity', v: wx.current.relative_humidity_2m, u: '%', i: <Droplets size={18} /> },
+                  { l: 'UV Index', v: wx.current.uv_index.toFixed(1), u: '', i: <Zap size={18} /> },
+                  { l: 'Sunrise', v: format(new Date(wx.daily.sunrise[0]), 'HH:mm'), u: '', i: <Sunrise size={18} /> },
+                  { l: 'Sunset', v: format(new Date(wx.daily.sunset[0]), 'HH:mm'), u: '', i: <Sunset size={18} /> },
+                ].map((d, i) => (
+                  <div key={i} className="panel tile">
+                    <div className="tile-head">{d.i}<span>{d.l}</span></div>
+                    <div className="tile-body">{d.v}<span style={{ fontSize: 14, opacity: 0.5, marginLeft: 4 }}>{d.u}</span></div>
+                  </div>
+                ))}
+              </motion.div>
+            )}
+
+            {view === '7-day' && (
+              <motion.div key="7d" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="panel">
+                <h3 className="label-sm">7-Day Forecast</h3>
+                <div className="forecast-list">
+                  {wx.daily.time.map((d, i) => (
+                    <div key={i} className="forecast-row">
+                      <span style={{ fontWeight: 700 }}>{i === 0 ? 'Today' : format(new Date(d), 'EEEE')}</span>
+                      <WxIcon code={wx.daily.weather_code[i]} isDay={1} size={24} />
+                      <div style={{ height: 4, background: 'var(--bg-glass-1)', borderRadius: 2, margin: '0 16px' }} />
+                      <div style={{ textAlign: 'right', fontWeight: 800 }}>
+                        {Math.round(wx.daily.temperature_2m_max[i])}°
+                        <span style={{ opacity: 0.3, fontWeight: 400, marginLeft: 8 }}>{Math.round(wx.daily.temperature_2m_min[i])}°</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+
+            {(view === 'hourly' || view === 'details') && (
+              <motion.div key="hr" className="panel" style={{ height: 400 }}>
+                <h3 className="label-sm">Temperature Trend</h3>
+                <ResponsiveContainer width="100%" height="80%">
+                  <AreaChart data={wx.hourly.time.slice(0, 24).map((t, i) => ({ time: format(new Date(t), 'HH'), temp: wx.hourly.temperature_2m[i] }))}>
+                    <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#0EA5E9" stopOpacity={0.3} /><stop offset="95%" stopColor="#0EA5E9" stopOpacity={0} /></linearGradient></defs>
+                    <CartesianGrid strokeOpacity={0.05} vertical={false} />
+                    <XAxis dataKey="time" hide />
+                    <YAxis hide domain={['dataMin - 2', 'dataMax + 2']} />
+                    <Tooltip cursor={false} contentStyle={{ background: 'var(--bg-deep)', border: 'none', borderRadius: 16, boxShadow: 'var(--shadow-env)' }} />
+                    <Area type="monotone" dataKey="temp" stroke="#0EA5E9" fillOpacity={1} fill="url(#g)" strokeWidth={4} />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </section>
       </main>
+
+      <footer className="footer">
+        © 2026 ATMOS WEATHER ENGINE • PROCESSED WITH PRECISION • 24H LIVE
+      </footer>
     </div>
   );
 }
