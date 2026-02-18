@@ -18,6 +18,14 @@ import './App.css';
 const GEO_URL = 'https://geocoding-api.open-meteo.com/v1/search';
 const WX_URL = 'https://api.open-meteo.com/v1/forecast';
 
+const QUICK_CITIES = [
+  { name: 'Mumbai', lat: 19.0760, lon: 72.8777, country: 'India' },
+  { name: 'London', lat: 51.5074, lon: -0.1278, country: 'UK' },
+  { name: 'New York', lat: 40.7128, lon: -74.0060, country: 'USA' },
+  { name: 'Tokyo', lat: 35.6762, lon: 139.6503, country: 'Japan' },
+  { name: 'Paris', lat: 48.8566, lon: 2.3522, country: 'France' },
+];
+
 // ─── WEATHER CODE MAP ─────────────────────────────────────────────────────────
 const WX_MAP = {
   0: { t: 'Clear Skies', c: '#fbbf24', i: Sun },
@@ -338,7 +346,7 @@ export default function App() {
                 title="Use my location"
                 disabled={geoLoading}
               >
-                <Navigation size={18} className={geoLoading ? 'spin' : ''} />
+                <Navigation size={18} color="var(--text-primary)" className={geoLoading ? 'spin' : ''} />
               </button>
               <button
                 className="btn-round"
@@ -346,7 +354,7 @@ export default function App() {
                 aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
                 title="Toggle theme"
               >
-                {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+                {theme === 'dark' ? <Sun size={18} color="var(--text-primary)" /> : <Moon size={18} color="var(--text-primary)" />}
               </button>
             </div>
           </header>
@@ -408,6 +416,23 @@ export default function App() {
             </AnimatePresence>
           </div>
 
+          {/* Quick Select Rails */}
+          <div className="quick-rail" role="list" aria-label="Quick city selection">
+            {QUICK_CITIES.map((c) => (
+              <button
+                key={c.name}
+                className={`quick-chip ${loc.name === c.name ? 'active' : ''}`}
+                onClick={() => setLoc(c)}
+              >
+                <Cloud size={14} />
+                <span>{c.name}</span>
+                <span className="quick-temp">
+                  {wx && loc.name === c.name ? `${Math.round(cur.temperature_2m)}°` : ''}
+                </span>
+              </button>
+            ))}
+          </div>
+
           {/* Hero Panel */}
           <motion.div
             className="panel hero"
@@ -423,11 +448,11 @@ export default function App() {
 
             <div className="hero-main">
               <div className="hero-left">
-                <h1 className="temp-hero" aria-label={`${Math.round(cur.temperature_2m ?? 0)} degrees`}>
-                  {Math.round(cur.temperature_2m ?? 0)}°
+                <h1 className="temp-hero" aria-label={`${Math.round(cur.temperature_2m ?? 0)} degrees Celsius`}>
+                  {Math.round(cur.temperature_2m ?? 0)}°<sup>C</sup>
                 </h1>
                 <p className="condition-text">{getWx(cur.weather_code).t}</p>
-                <p className="feels-like">Feels like {Math.round(cur.apparent_temperature ?? 0)}°</p>
+                <p className="feels-like">Feels like {Math.round(cur.apparent_temperature ?? 0)}°C</p>
                 <time className="datetime" dateTime={now.toISOString()}>
                   {format(now, 'EEEE, dd MMMM')}
                   <span className="time-sep">•</span>
@@ -467,7 +492,7 @@ export default function App() {
             <h2 className="label-sm">Next 24 Hours</h2>
             <div className="hourly-rail" role="list" aria-label="Hourly forecast">
               {hourlyData.map((h, i) => (
-                <div key={`hour-${i}`} className="hour-card" role="listitem">
+                <div key={`hour-${i}`} className={`hour-card ${i === 0 ? 'now' : ''}`} role="listitem">
                   <span className="hour-time">{i === 0 ? 'Now' : `${h.time}:00`}</span>
                   <WxIcon code={h.code} isDay={h.isDay} size={28} />
                   <span className="hour-temp">{h.temp}°</span>

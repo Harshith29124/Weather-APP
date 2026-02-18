@@ -345,7 +345,56 @@ input:focus:not(:focus-visible) {
   transform: none;
 }
 
-/* ── SEARCH BOX ────────────────────────────────────────────────────────────── */
+/* ── QUICK SELECT RAIL ────────────────────────────────────────────────────── */
+.quick-rail {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 8px 2px 16px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  margin-top: -4px;
+}
+
+.quick-rail::-webkit-scrollbar {
+  display: none;
+}
+
+.quick-chip {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: var(--bg-glass-1);
+  border: 1px solid var(--glass-stroke);
+  border-radius: var(--r-full);
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+.quick-chip:hover {
+  background: var(--bg-glass-2);
+  color: var(--text-primary);
+}
+
+.quick-chip.active {
+  background: var(--accent-glow);
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: 0 0 15px var(--accent-glow);
+}
+
+.quick-temp {
+  opacity: 0.6;
+  font-size: 0.75rem;
+  font-weight: 500;
+  margin-left: 2px;
+}
+
 .search-box {
   position: relative;
 }
@@ -362,11 +411,11 @@ input:focus:not(:focus-visible) {
 
 .search-input {
   width: 100%;
-  height: 50px;
+  height: clamp(44px, 10vw, 50px);
   background: var(--bg-glass-1);
   border: 1.5px solid var(--glass-stroke);
   border-radius: var(--r-full);
-  padding: 0 44px 0 46px;
+  padding: 0 44px 0 44px;
   font-size: 0.9rem;
   font-weight: 500;
   backdrop-filter: blur(16px);
@@ -556,6 +605,16 @@ input:focus:not(:focus-visible) {
   line-height: 0.88;
   letter-spacing: -0.06em;
   margin: 8px 0 6px;
+  display: flex;
+  align-items: flex-start;
+}
+
+.temp-hero sup {
+  font-size: 0.35em;
+  font-weight: 700;
+  margin-top: 0.15em;
+  margin-left: 0.1em;
+  opacity: 0.8;
 }
 
 /* condition label: never smaller than 1rem, fluid, capped at 1.4rem */
@@ -681,6 +740,12 @@ input:focus:not(:focus-visible) {
 .hour-card:hover {
   background: var(--bg-glass-2);
   transform: translateY(-2px);
+}
+
+.hour-card.now {
+  background: var(--accent-glow);
+  border-color: var(--accent);
+  box-shadow: 0 0 20px var(--accent-glow);
 }
 
 .hour-time {
