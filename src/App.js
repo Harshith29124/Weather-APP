@@ -4,13 +4,13 @@ import {
   Search, MapPin, Sun, Moon, Cloud,
   CloudRain, CloudSnow, CloudLightning, Gauge, Eye,
   Droplets, Zap, SunMedium, Sunset, Sunrise, Wind,
-  Thermometer, Navigation, AlertTriangle, RefreshCw, X
+  Thermometer, Navigation, AlertTriangle, X
 } from 'lucide-react';
 import axios from 'axios';
 import { format } from 'date-fns';
 import {
-  AreaChart, Area, XAxis, YAxis, CartesianGrid,
-  Tooltip, ResponsiveContainer, LineChart, Line
+  AreaChart, Area, XAxis, CartesianGrid,
+  Tooltip, ResponsiveContainer
 } from 'recharts';
 import './App.css';
 
